@@ -22,7 +22,6 @@
       <field name="res_model">myaccount.myaccount</field>
       <field name="view_mode">tree,form</field>
     </record>
-  <menuitem id="menu_my_account" name="My Account" sequence="10"/>
 
     <!-- server action to the one above -->
 <!--
