@@ -9,7 +9,7 @@ class my_account(models.Model):
 
     name = fields.Char(string='Name')
     code = fields.Char(string='Code')
-    reconcile = fields.Boolean(string='Reconciliation')
+    reconcile = fields.Boolean(string='Allow Reconciliation')
     deprecate = fields.Boolean(string='Deprecated')
 
 #     @api.depends('value')

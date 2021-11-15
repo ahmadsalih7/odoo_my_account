@@ -9,7 +9,7 @@
     </record>
 
     <!-- COA Form View-->
-
+      
     <record id="COA_view_form" model="ir.ui.view">
       <field name="name">COA.form</field>
       <field name="model">myaccount.myaccount</field>
