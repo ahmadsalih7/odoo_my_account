@@ -27,7 +27,8 @@
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
-        'views/myaccount_menus.xml'
+        'views/myaccount_menus.xml',
+        'data/account_tags.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

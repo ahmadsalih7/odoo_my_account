@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Tags for Chart of Accounts -->
+        <record id="account_tag_operating" model="myaccount.myaccount.tag">
+            <field name="name">Operating Activities</field>
+        </record>
+        <record id="account_tag_financing" model="myaccount.myaccount.tag">
+            <field name="name">Financing Activities</field>
+        </record>
+        <record id="account_tag_investing" model="myaccount.myaccount.tag">
+            <field name="name">Investing &amp; Extraordinary Activities</field>
+        </record>
+    </data>
+</odoo>

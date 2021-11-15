@@ -19,6 +19,7 @@
             <group>
               <field name="name" style="width:40%%"/>
               <field name="code" style="width:40%%"/>
+              <field name="tag_ids" widget="many2many_tags" options="{'no_create_edit': True}" style="width:40%%"/>
               <field name="reconcile"/>
               <field name="deprecate"/>
             </group>
