@@ -3,7 +3,7 @@
     <!-- actions opening views on models -->
 
     <record model="ir.actions.act_window" id="my_account.action_window">
-      <field name="name">My Account</field>
+      <field name="name">Chart of Accounts</field>
       <field name="res_model">myaccount.myaccount</field>
       <field name="view_mode">tree,form</field>
     </record>
@@ -28,6 +28,16 @@
       </field>
     </record>
 
+    <record id="COA_view_tree" model="ir.ui.view">
+      <field name="name">COA.tree</field>
+        <field name="model">myaccount.myaccount</field>
+        <field name="arch" type="xml">
+          <tree>
+            <field name="code"/>
+            <field name="name"/>
+          </tree>
+        </field>
+      </record>
 
   </data>
 </odoo>

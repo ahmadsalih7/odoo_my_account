@@ -1,0 +1,65 @@
+code,name,reconcile
+12001,Account Receivable,True
+12002,Account Receivable (PoS),True
+15000,Furniture and Equipment,False
+17000,Accumulated Depreciation,False
+20001,Account Payable,True
+24000,Payroll Liabilities,False
+25500,Sales Tax Payable,False
+26500,Use Tax Payable,False
+30100,Capital Stock,False
+30200,Dividends Paid,False
+30000,Opening Balance Equity,False
+32000,Retained Earnings,False
+60000,Advertising and Promotion,False
+60200,Automobile Expense,False
+60400,Bank Service Charges,False
+61000,Business Licenses and Permits,False
+62000,Continuing Education,False
+61400,Charitable Contributions,False
+61700,Computer and Internet Expenses,False
+62400,Depreciation Expense,False
+62500,Dues and Subscriptions,False
+62600,Equipment Rental,False
+63400,Interest Expense,False
+64300,Meals and Entertainment,False
+64900,Office Supplies,False
+66000,Payroll Expenses,False
+66500,Postage and Delivery,False
+66600,Printing and Reproduction,False
+66700,Professional Fees,False
+67100,Rent Expense,False
+67200,Repairs and Maintenance,False
+68000,Taxes - Property,False
+68100,Telephone Expense,False
+68400,Travel Expense,False
+68600,Utilities,False
+64200,Marketing Expense,False
+63200,"Gasoline, Fuel and Oil",False
+69000,Miscellaneous Expense,False
+69310,General Liability Insurance,False
+69320,Health Insurance,False
+69330,Life and Disability Insurance,False
+69350,Professional Liability,False
+69360,Worker's Compensation,False
+42400,Commission income,False
+47400,Rent Income,False
+47900,Service Sales,False
+47910,Product Sales,False
+48310,Sales Discounts,False
+48900,Shipping and Delivery Income,False
+49000,Miscellaneous Income,False
+70000,Finance Charge Income,False
+70200,Interest Income,False
+70500,Proceeds from Sale of Assets,False
+70100,Insurance Proceeds Received,False
+53600,Other Job Related Costs,False
+51100,Freight and Shipping Costs,False
+52500,Purchase Discounts,False
+52900,Purchases - Resale Items,False
+50300,Commissions Paid,False
+53500,Subcontractors Expense,False
+52000,Merchant Account Fees,False
+53800,Subcontractors Expense,False
+54100,Tools and Small Equipment,False
+24600,Customer Deposits Received,False

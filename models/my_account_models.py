@@ -14,7 +14,7 @@ class my_account(models.Model):
     deprecate = fields.Boolean(string='Deprecated')
 
 
-class my_account(models.Model):
+class my_accountAcountTag(models.Model):
     _name = 'myaccount.myaccount.tag'
     _description = 'tags of accounts '
 
