@@ -8,6 +8,15 @@
       <field name="view_mode">tree,form</field>
     </record>
 
+        <!-- Journal Item action -->
+    
+    <record model="ir.actions.act_window" id="my_account.line_action_window">
+      <field name="name">Journal Items</field>
+      <field name="res_model">myaccount.move.line</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
     <!-- COA Form View-->
       
     <record id="COA_view_form" model="ir.ui.view">
@@ -28,6 +37,8 @@
       </field>
     </record>
 
+    <!-- COA Form View-->
+
     <record id="COA_view_tree" model="ir.ui.view">
       <field name="name">COA.tree</field>
         <field name="model">myaccount.myaccount</field>
@@ -35,6 +46,23 @@
           <tree>
             <field name="code"/>
             <field name="name"/>
+          </tree>
+        </field>
+      </record>
+
+
+       <!-- Journel Item Form View-->
+
+    <record id="COA_view_tree" model="ir.ui.view">
+      <field name="name">JI.tree</field>
+        <field name="model">myaccount.move.line</field>
+        <field name="arch" type="xml">
+          <tree>
+            <field name="account_id"/>
+            <field name="partner_id"/>
+            <field name="name" string="label"/>
+            <field name="debit" class="oe_inline" widget='monetary' options="{'currency_field': 'company_currency_id'}"/>
+            <field name="credit"/>
           </tree>
         </field>
       </record>
