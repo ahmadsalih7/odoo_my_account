@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_myaccount_myaccount,access_myaccount_myaccount,model_myaccount_myaccount,base.group_user,1,1,1,1
 access_myaccount_myaccount_tag,access_myaccount_myaccount_tag,model_myaccount_myaccount_tag,base.group_user,1,1,1,1
 access_myaccount_move_line,access_myaccount_move_line,model_myaccount_move_line,base.group_user,1,1,1,1
+access_myaccount_move,access_myaccount_move,model_myaccount_move,base.group_user,1,1,1,1

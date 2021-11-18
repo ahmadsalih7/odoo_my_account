@@ -98,5 +98,27 @@
       </field>
     </record>
 
+    <!-- Journel Entries Form View-->
+
+    <record id="JE_view_form" model="ir.ui.view">
+      <field name="name">JE.form</field>
+      <field name="model">myaccount.move</field>
+      <field name="arch" type="xml">
+        <form string="Journal Entries">
+          <sheet>
+            <group>
+              <field name="date" />
+              <field name="ref" style="width:40%%"/>
+              <notebook>
+                <page string="Journal Items">
+                  <field name="line_ids" />
+                </page>
+              </notebook>
+            </group>
+          </sheet>    
+        </form>
+      </field>
+    </record>
+
   </data>
 </odoo>
