@@ -6,6 +6,8 @@
 
 		<menuitem id="accounts_first_menu" name="Accounting" parent="menu_my_account" sequence="1" /> 
 		<menuitem id="JI_action_menue" name="Journal Items" parent="accounts_first_menu" sequence="2" action="my_account.line_action_window" />
+		<menuitem id="JE_action_menue" name="Journal Entries" parent="accounts_first_menu" sequence="3" action="my_account.move_action_window" />
+
 
 	</data>
 </odoo>

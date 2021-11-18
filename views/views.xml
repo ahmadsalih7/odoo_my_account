@@ -16,6 +16,14 @@
       <field name="view_mode">tree,form</field>
     </record>
 
+    <!-- Journal Entries action -->
+
+    <record model="ir.actions.act_window" id="my_account.move_action_window">
+      <field name="name">Journal Entries</field>
+      <field name="res_model">myaccount.move</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
 
     <!-- COA Form View-->
       
@@ -51,21 +59,44 @@
       </record>
 
 
-       <!-- Journel Item Form View-->
+       <!-- Journel Item Tree View-->
 
-    <record id="COA_view_tree" model="ir.ui.view">
+    <record id="JI_view_tree" model="ir.ui.view">
       <field name="name">JI.tree</field>
         <field name="model">myaccount.move.line</field>
         <field name="arch" type="xml">
           <tree>
             <field name="account_id"/>
             <field name="partner_id"/>
-            <field name="name" string="label"/>
-            <field name="debit" class="oe_inline" widget='monetary' options="{'currency_field': 'company_currency_id'}"/>
-            <field name="credit"/>
+            <field name="company_id" invisible="1"/>
+            <field name="company_currency_id" invisible="1"/>
+            <field name="name" />
+            <field name="debit" />
+            <field name="credit" />
           </tree>
         </field>
       </record>
+
+      <!-- Journel Item Form View-->
+
+      <record id="JI_view_form" model="ir.ui.view">
+      <field name="name">JI.form</field>
+      <field name="model">myaccount.move.line</field>
+      <field name="arch" type="xml">
+        <form string="Journal Items">
+          <sheet>
+            <group>
+              <field name="account_id" style="width:40%%"/>
+              <field name="name" style="width:40%%"/>
+              <field name="company_id" invisible="1" />
+              <field name="company_currency_id" invisible="1" />
+              <field name="debit"  style="width:40%%"/>
+              <field name="credit" style="width:40%%"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
 
   </data>
 </odoo>
