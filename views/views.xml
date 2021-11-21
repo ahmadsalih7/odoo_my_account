@@ -65,7 +65,7 @@
       <field name="name">JI.tree</field>
         <field name="model">myaccount.move.line</field>
         <field name="arch" type="xml">
-          <tree>
+          <tree editable="top">
             <field name="account_id"/>
             <field name="partner_id"/>
             <field name="company_id" invisible="1"/>
@@ -75,6 +75,18 @@
             <field name="credit" sum="Total Credit"/>
           </tree>
         </field>
+      </record>
+
+      <record id="JE_view_tree" model="ir.ui.view">
+          <field name="name">JE.tree</field>
+          <field name="model">myaccount.move</field>
+          <field name="arch" type="xml">
+            <tree >
+              <field name="date"/>
+              <field name="ref"/>
+              <field name="line_ids" />
+            </tree>
+          </field>
       </record>
 
       <!-- Journel Item Form View-->
