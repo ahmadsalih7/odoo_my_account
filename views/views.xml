@@ -71,8 +71,8 @@
             <field name="company_id" invisible="1"/>
             <field name="company_currency_id" invisible="1"/>
             <field name="name" />
-            <field name="debit" />
-            <field name="credit" />
+            <field name="debit" sum="Total Debit" />
+            <field name="credit" sum="Total Credit"/>
           </tree>
         </field>
       </record>
