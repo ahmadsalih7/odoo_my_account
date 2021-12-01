@@ -1,137 +1,137 @@
 <odoo>
-  <data>
-    <!-- actions opening views on models -->
+    <data>
+        <!-- actions opening views on models -->
 
-    <record model="ir.actions.act_window" id="my_account.action_window">
-      <field name="name">Chart of Accounts</field>
-      <field name="res_model">myaccount.myaccount</field>
-      <field name="view_mode">tree,form</field>
-    </record>
+        <record model="ir.actions.act_window" id="my_account.action_window">
+            <field name="name">Chart of Accounts</field>
+            <field name="res_model">myaccount.myaccount</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
         <!-- Journal Item action -->
-    
-    <record model="ir.actions.act_window" id="my_account.line_action_window">
-      <field name="name">Journal Items</field>
-      <field name="res_model">myaccount.move.line</field>
-      <field name="view_mode">tree,form</field>
-    </record>
 
-    <!-- Journal Entries action -->
+        <record model="ir.actions.act_window" id="my_account.line_action_window">
+            <field name="name">Journal Items</field>
+            <field name="res_model">myaccount.move.line</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
-    <record model="ir.actions.act_window" id="my_account.move_action_window">
-      <field name="name">Journal Entries</field>
-      <field name="res_model">myaccount.move</field>
-      <field name="view_mode">tree,form</field>
-    </record>
+        <!-- Journal Entries action -->
 
-
-    <!-- COA Form View-->
-      
-    <record id="COA_view_form" model="ir.ui.view">
-      <field name="name">COA.form</field>
-      <field name="model">myaccount.myaccount</field>
-      <field name="arch" type="xml">
-        <form string="Chart of Accounts List">
-          <sheet>
-            <group>
-              <field name="name" style="width:40%%"/>
-              <field name="code" style="width:40%%"/>
-              <field name="tag_ids" widget="many2many_tags" options="{'no_create_edit': True}" style="width:40%%"/>
-              <field name="reconcile"/>
-              <field name="deprecate"/>
-            </group>
-          </sheet>    
-        </form>
-      </field>
-    </record>
-
-    <!-- COA Form View-->
-
-    <record id="COA_view_tree" model="ir.ui.view">
-      <field name="name">COA.tree</field>
-        <field name="model">myaccount.myaccount</field>
-        <field name="arch" type="xml">
-          <tree>
-            <field name="code"/>
-            <field name="name"/>
-          </tree>
-        </field>
-      </record>
+        <record model="ir.actions.act_window" id="my_account.move_action_window">
+            <field name="name">Journal Entries</field>
+            <field name="res_model">myaccount.move</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
 
-       <!-- Journel Item Tree View-->
+        <!-- COA Form View-->
 
-    <record id="JI_view_tree" model="ir.ui.view">
-      <field name="name">JI.tree</field>
-        <field name="model">myaccount.move.line</field>
-        <field name="arch" type="xml">
-          <tree editable="bottom">
-            <field name="account_id"/>
-            <field name="partner_id"/>
-            <field name="company_id" invisible="1"/>
-            <field name="company_currency_id" invisible="1"/>
-            <field name="name" />
-            <field name="debit" sum="Total Debit" />
-            <field name="credit" sum="Total Credit"/>
-            <field name="balance" invisible="1"/>
-          </tree>
-        </field>
-      </record>
+        <record id="COA_view_form" model="ir.ui.view">
+            <field name="name">COA.form</field>
+            <field name="model">myaccount.myaccount</field>
+            <field name="arch" type="xml">
+                <form string="Chart of Accounts List">
+                    <sheet>
+                        <group>
+                            <field name="name" style="width:40%%"/>
+                            <field name="code" style="width:40%%"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'no_create_edit': True}"
+                                   style="width:40%%"/>
+                            <field name="reconcile"/>
+                            <field name="deprecate"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
-      <record id="JE_view_tree" model="ir.ui.view">
-          <field name="name">JE.tree</field>
-          <field name="model">myaccount.move</field>
-          <field name="arch" type="xml">
-            <tree >
-              <field name="date"/>
-              <field name="ref"/>
-              <field name="line_ids" />
-            </tree>
-          </field>
-      </record>
+        <!-- COA Form View-->
 
-      <!-- Journel Item Form View-->
+        <record id="COA_view_tree" model="ir.ui.view">
+            <field name="name">COA.tree</field>
+            <field name="model">myaccount.myaccount</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="code"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
 
-      <record id="JI_view_form" model="ir.ui.view">
-      <field name="name">JI.form</field>
-      <field name="model">myaccount.move.line</field>
-      <field name="arch" type="xml">
-        <form string="Journal Items">
-          <sheet>
-            <group>
-              <field name="account_id" style="width:40%%"/>
-              <field name="name" style="width:40%%"/>
-              <field name="company_id" invisible="1" />
-              <field name="company_currency_id" invisible="1" />
-              <field name="debit"  style="width:40%%"/>
-              <field name="credit" style="width:40%%"/>
-            </group>
-          </sheet>
-        </form>
-      </field>
-    </record>
 
-    <!-- Journel Entries Form View-->
+        <!-- Journel Item Tree View-->
 
-    <record id="JE_view_form" model="ir.ui.view">
-      <field name="name">JE.form</field>
-      <field name="model">myaccount.move</field>
-      <field name="arch" type="xml">
-        <form string="Journal Entries">
-          <sheet>
-            <group>
-              <field name="date" />
-              <field name="ref" style="width:40%%"/>
-              <notebook>
-                <page string="Journal Items">
-                  <field name="line_ids" />
-                </page>
-              </notebook>
-            </group>
-          </sheet>    
-        </form>
-      </field>
-    </record>
+        <record id="JI_view_tree" model="ir.ui.view">
+            <field name="name">JI.tree</field>
+            <field name="model">myaccount.move.line</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="account_id"/>
+                    <field name="partner_id"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
+                    <field name="name"/>
+                    <field name="debit" sum="Total Debit"/>
+                    <field name="credit" sum="Total Credit"/>
+                    <field name="balance" invisible="1"/>
+                </tree>
+            </field>
+        </record>
 
-  </data>
+        <record id="JE_view_tree" model="ir.ui.view">
+            <field name="name">JE.tree</field>
+            <field name="model">myaccount.move</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date"/>
+                    <field name="ref"/>
+                    <field name="line_ids"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Journel Item Form View-->
+
+        <record id="JI_view_form" model="ir.ui.view">
+            <field name="name">JI.form</field>
+            <field name="model">myaccount.move.line</field>
+            <field name="arch" type="xml">
+                <form string="Journal Items">
+                    <sheet>
+                        <group>
+                            <field name="account_id" style="width:40%%"/>
+                            <field name="name" style="width:40%%"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="company_currency_id" invisible="1"/>
+                            <field name="debit" style="width:40%%"/>
+                            <field name="credit" style="width:40%%"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Journel Entries Form View-->
+
+        <record id="JE_view_form" model="ir.ui.view">
+            <field name="name">JE.form</field>
+            <field name="model">myaccount.move</field>
+            <field name="arch" type="xml">
+                <form string="Journal Entries">
+                    <sheet>
+                        <group>
+                            <field name="date"/>
+                            <field name="ref" style="width:40%%"/>
+                        </group>
+                        <notebook>
+                            <page string="Journal Items">
+                                <field name="line_ids"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
 </odoo>
