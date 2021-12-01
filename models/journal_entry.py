@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 
 class my_accountMoveLine(models.Model):
@@ -68,7 +68,7 @@ class my_accountMove(models.Model):
     _description = "Journal Entries"
 
     date = fields.Date(string='Date', required=True, index=True, readonly=True, default=fields.Date.context_today)
-    ref = fields.Char(string='Reference', copy=False)
+    ref = fields.Char(string='Move Ref', required=True, copy=False, readonly=True, default=lambda self: _("New"))
     line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Journal Items')
     state = fields.Selection(selection=[
         ('draft', 'Draft'),
@@ -80,3 +80,9 @@ class my_accountMove(models.Model):
 
     def action_post(self):
         self.state = 'posted'
+
+    @api.model
+    def create(self,vals):
+        if vals.get('ref', _('New')) == _('New'):
+            vals['ref'] = self.env['ir.sequence'].next_by_code('myaccount.move') or _('New')
+        return super(my_accountMove, self).create(vals)

@@ -26,10 +26,11 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'data/account_tags.xml',
+        'data/data.xml',
         'views/views.xml',
         'views/templates.xml',
-        'views/myaccount_menus.xml',
-        'data/account_tags.xml'
+        'views/myaccount_menus.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -1,0 +1,12 @@
+<odoo>
+    <data>
+        <!-- Sequence for Journal Entries !-->
+        <record id="sequence_journal_entries" model="ir.sequence">
+            <field name="name">Journal Entries</field>
+            <field name="code">myaccount.move</field>
+            <field name="prefix">MISC/%(year)s/</field>
+            <field name="padding">4</field>
+            <field eval="False" name="company_id"/>
+        </record>
+    </data>
+</odoo>
