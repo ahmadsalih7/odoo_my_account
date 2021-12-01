@@ -119,6 +119,10 @@
             <field name="model">myaccount.move</field>
             <field name="arch" type="xml">
                 <form string="Journal Entries">
+                    <header>
+                        <button id="action_post" name="action_post" string="Post" class="btn-primary" type="object"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
                     <sheet>
                         <group>
                             <field name="date"/>

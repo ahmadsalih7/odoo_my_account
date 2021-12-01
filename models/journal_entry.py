@@ -69,3 +69,13 @@ class my_accountMove(models.Model):
     date = fields.Date(string='Date', required=True, index=True, readonly=True, default=fields.Date.context_today)
     ref = fields.Char(string='Reference', copy=False)
     line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Journal Items')
+    state = fields.Selection(selection=[
+        ('draft', 'Draft'),
+        ('posted', 'Posted'),
+        ('cancel', 'Cancelled')
+    ], string='Status', required=True, readonly=True, copy=False, tracking=True,
+        default='draft')
+
+
+    def action_post(self):
+        self.state = 'posted'
