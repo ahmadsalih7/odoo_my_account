@@ -64,6 +64,7 @@ class my_accountMoveLine(models.Model):
 
 class my_accountMove(models.Model):
     _name = "myaccount.move"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Journal Entries"
 
     date = fields.Date(string='Date', required=True, index=True, readonly=True, default=fields.Date.context_today)
