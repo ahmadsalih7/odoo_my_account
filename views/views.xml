@@ -123,9 +123,13 @@
                         <button id="action_post" name="action_post" string="Post" class="btn-primary" type="object"
                         attrs="{'invisible': [('state', '!=', 'draft')]}" />
                         <button id="button_draft" name="action_draft" string="Reset to Draft"
-                                type="object" class="oe_highlight"
+                                type="object" class="btn-secondary"
                                 attrs="{'invisible': [('state', '!=', 'posted')]}"/>
-                        <field name="state" widget="statusbar" clickable="True"/>
+                        <button id="button_reverse" name="%(my_account.action_view_myaccount_move_reversal)d"
+                                string="Reverse"
+                                type="action" class="btn-secondary"
+                                attrs="{'invisible': [('state', '!=', 'posted')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
                     </header>
                     <sheet>
                         <div class="oe_title">

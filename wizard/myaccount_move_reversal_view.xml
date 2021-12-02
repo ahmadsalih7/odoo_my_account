@@ -1,0 +1,26 @@
+<odoo>
+    <record id="view_myaccount_move_reversal" model="ir.ui.view">
+        <field name="name">myaccount.move.reversal.form</field>
+        <field name="model">myaccount.move.reversal</field>
+        <field name="arch" type="xml">
+            <form string="Reverse">
+                <group>
+                    <field name="date"/>
+                </group>
+                <footer>
+                    <button string='Reverse' name="reverse_moves" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_view_myaccount_move_reversal" model="ir.actions.act_window">
+        <field name="name">Reverse</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">myaccount.move.reversal</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_myaccount_move_reversal"/>
+        <field name="target">new</field>
+    </record>
+</odoo>
