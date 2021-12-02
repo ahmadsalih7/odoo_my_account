@@ -18,17 +18,14 @@ class my_accountMoveLine(models.Model):
     move_id = fields.Many2one('myaccount.move')
     balance = fields.Monetary(string='Balance', default=0.0, currency_field='company_currency_id')
 
-    def total_balance(self):
-        total = 0
-        for line in self.move_id.line_ids:
-            total += line.balance
-        return total
-
+    # -----------------------------
+    # Helpers
+    # -----------------------------
 
     def recompute_fields(self):
         if not self.debit and not self.credit and not self.balance:
-            current_balance = self.total_balance()
-            if current_balance > 0.0 :
+            current_balance = sum(line.balance for line in self.move_id.line_ids)
+            if current_balance > 0.0:
                 self.debit = current_balance
             else:
                 self.credit = -1 * current_balance
@@ -40,11 +37,9 @@ class my_accountMoveLine(models.Model):
         else:
             self.balance = self.credit
 
-
-
-    ####################
+    # -----------------------------
     # On change methods
-    ####################
+    # -----------------------------
 
     @api.onchange('debit')
     def onChangeDebit(self):
@@ -57,9 +52,6 @@ class my_accountMoveLine(models.Model):
         if self.credit:
             self.debit = 0.0
         self.recompute_fields()
-
-
-
 
 
 class my_accountMove(models.Model):
@@ -77,7 +69,6 @@ class my_accountMove(models.Model):
     ], string='Status', required=True, readonly=True, copy=False, tracking=True,
         default='draft')
 
-
     def action_post(self):
         self.write({'state': 'posted'})
 
@@ -85,7 +76,7 @@ class my_accountMove(models.Model):
         self.write({'state': 'draft'})
 
     @api.model
-    def create(self,vals):
+    def create(self, vals):
         if vals.get('ref', _('New')) == _('New'):
             vals['ref'] = self.env['ir.sequence'].next_by_code('myaccount.move') or _('New')
         return super(my_accountMove, self).create(vals)
