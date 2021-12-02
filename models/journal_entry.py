@@ -79,7 +79,10 @@ class my_accountMove(models.Model):
 
 
     def action_post(self):
-        self.state = 'posted'
+        self.write({'state': 'posted'})
+
+    def action_draft(self):
+        self.write({'state': 'draft'})
 
     @api.model
     def create(self,vals):
