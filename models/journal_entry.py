@@ -58,9 +58,9 @@ class my_accountMove(models.Model):
     _name = "myaccount.move"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Journal Entries"
-
+    name = fields.Char(string='Number', required=True, copy=False, readonly=True, default=lambda self: _("New"))
     date = fields.Date(string='Date', required=True, index=True, readonly=True, default=fields.Date.context_today)
-    ref = fields.Char(string='Move Ref', required=True, copy=False, readonly=True, default=lambda self: _("New"))
+    ref = fields.Char(string='Move Ref', copy=False)
     line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Journal Items')
     state = fields.Selection(selection=[
         ('draft', 'Draft'),
@@ -77,6 +77,6 @@ class my_accountMove(models.Model):
 
     @api.model
     def create(self, vals):
-        if vals.get('ref', _('New')) == _('New'):
-            vals['ref'] = self.env['ir.sequence'].next_by_code('myaccount.move') or _('New')
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('myaccount.move') or _('New')
         return super(my_accountMove, self).create(vals)
