@@ -1,13 +1,15 @@
 <odoo>
 	<data>
 		<menuitem id="menu_my_account" name="My Account" sequence="10" />
-		<menuitem id="my_account_first_menu" name="Configuration" parent="menu_my_account" sequence="2" />
+		<menuitem id="my_account_first_menu" name="Configuration" parent="menu_my_account" sequence="3" />
 		<menuitem id="my_account_second_menu" name="Chart of Accounts" parent="my_account_first_menu" sequence="2" action="my_account.action_window" />
 
-		<menuitem id="accounts_first_menu" name="Accounting" parent="menu_my_account" sequence="1" /> 
+		<menuitem id="accounts_first_menu" name="Accounting" parent="menu_my_account" sequence="2" />
 		<menuitem id="JI_action_menue" name="Journal Items" parent="accounts_first_menu" sequence="2" action="my_account.line_action_window" />
 		<menuitem id="JE_action_menue" name="Journal Entries" parent="accounts_first_menu" sequence="3" action="my_account.move_action_window" />
 
+		<menuitem id="customers_first_menu" name="Customers" parent="menu_my_account" sequence="1" />
+		<menuitem id="products_action_menue" name="Products" parent="customers_first_menu" sequence="3" action="my_account.products_action_window" />
 
 	</data>
 </odoo>
