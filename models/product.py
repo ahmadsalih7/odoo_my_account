@@ -17,4 +17,5 @@ class ProductTemplate(models.Model):
     default_code = fields.Char('Internal Reference')
     barcode = fields.Char(string='Barcode')
     list_price = fields.Float('Sales Price', default=1.0)
+    description = fields.Text('Description')
 
