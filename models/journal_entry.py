@@ -58,6 +58,13 @@ class my_accountMove(models.Model):
     _name = "myaccount.move"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Journal Entries"
+
+    type = fields.Selection(selection=[
+        ('entry', 'Journal Entry'),
+        ('out_invoice', 'Customer Invoice'),
+    ], string='Type', required=True, store=True, readonly=True, tracking=True,
+        default="entry", change_default=True)
+    partner_id = fields.Many2one('res.partner', string='Partner', ondelete='restrict')
     name = fields.Char(string='Number', required=True, copy=False, readonly=True, default=lambda self: _("New"))
     date = fields.Date(string='Date', required=True, index=True, readonly=True, default=fields.Date.context_today)
     ref = fields.Char(string='Move Ref', copy=False)
@@ -68,6 +75,14 @@ class my_accountMove(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', required=True, readonly=True, copy=False, tracking=True,
         default='draft')
+
+    # =========================================================
+    # Invoice related fields
+    # =========================================================
+
+    invoice_date = fields.Date(string='Invoice/Bill Date', readonly=True, copy=False)
+    invoice_line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Invoice lines',
+                                       copy=False, readonly=True)
 
     def action_post(self):
         self.write({'state': 'posted'})
