@@ -1,5 +1,94 @@
 <odoo>
     <data>
+
+        <!-- ######################  List views  ##################################  -->
+
+        <!-- Journel Item Tree View-->
+
+        <record id="JI_view_tree" model="ir.ui.view">
+            <field name="name">JI.tree</field>
+            <field name="model">myaccount.move.line</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="account_id"/>
+                    <field name="partner_id"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
+                    <field name="name"/>
+                    <field name="debit" sum="Total Debit"/>
+                    <field name="credit" sum="Total Credit"/>
+                    <field name="balance" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="JE_view_tree" model="ir.ui.view">
+            <field name="name">JE.tree</field>
+            <field name="model">myaccount.move</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date"/>
+                    <field name="ref"/>
+                    <field name="line_ids"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="JI_view_tree" model="ir.ui.view">
+            <field name="name">JI.tree</field>
+            <field name="model">myaccount.move.line</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="account_id"/>
+                    <field name="partner_id"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
+                    <field name="name"/>
+                    <field name="debit" sum="Total Debit"/>
+                    <field name="credit" sum="Total Credit"/>
+                    <field name="balance" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Product Tree View-->
+
+        <record id="product_view_tree" model="ir.ui.view">
+            <field name="name">product.tree</field>
+            <field name="model">my_product.template</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="default_code"/>
+                    <field name="name"/>
+                    <field name="list_price"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Invoices Tree View-->
+
+        <record id="view_invoice_tree" model="ir.ui.view">
+            <field name="name">myaccount.invoice.tree</field>
+            <field name="model">myaccount.move</field>
+            <field name="arch" type="xml">
+                <tree string="Invoices"
+                      decoration-info="state == 'draft'"
+                      decoration-muted="state == 'cancel'">
+                    <field name="name"/>
+                    <field name="partner_id" invisible="1"/>
+                    <field name="invoice_date" optional="show"
+                           invisible="context.get('default_type') not in ('in_invoice', 'in_refund','in_receipt')"
+                           string="Bill Date"/>
+                    <field name="invoice_date" optional="show"
+                           string="Invoice Date"/>
+                    <field name="state" optional="show"/>
+                    <field name="type" invisible="context.get('default_type', True)"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- ######################  Actions  ##################################  -->
+
         <!-- actions opening views on models -->
 
         <record model="ir.actions.act_window" id="my_account.action_window">
@@ -191,94 +280,6 @@
                         </notebook>
                     </sheet>
                 </form>
-            </field>
-        </record>
-
-
-        <!-- ######################  List views  ##################################  -->
-
-
-        <!-- Journel Item Tree View-->
-
-        <record id="JI_view_tree" model="ir.ui.view">
-            <field name="name">JI.tree</field>
-            <field name="model">myaccount.move.line</field>
-            <field name="arch" type="xml">
-                <tree editable="bottom">
-                    <field name="account_id"/>
-                    <field name="partner_id"/>
-                    <field name="company_id" invisible="1"/>
-                    <field name="company_currency_id" invisible="1"/>
-                    <field name="name"/>
-                    <field name="debit" sum="Total Debit"/>
-                    <field name="credit" sum="Total Credit"/>
-                    <field name="balance" invisible="1"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="JE_view_tree" model="ir.ui.view">
-            <field name="name">JE.tree</field>
-            <field name="model">myaccount.move</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="date"/>
-                    <field name="ref"/>
-                    <field name="line_ids"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="JI_view_tree" model="ir.ui.view">
-            <field name="name">JI.tree</field>
-            <field name="model">myaccount.move.line</field>
-            <field name="arch" type="xml">
-                <tree editable="bottom">
-                    <field name="account_id"/>
-                    <field name="partner_id"/>
-                    <field name="company_id" invisible="1"/>
-                    <field name="company_currency_id" invisible="1"/>
-                    <field name="name"/>
-                    <field name="debit" sum="Total Debit"/>
-                    <field name="credit" sum="Total Credit"/>
-                    <field name="balance" invisible="1"/>
-                </tree>
-            </field>
-        </record>
-
-        <!-- Product Tree View-->
-
-        <record id="product_view_tree" model="ir.ui.view">
-            <field name="name">product.tree</field>
-            <field name="model">my_product.template</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="default_code"/>
-                    <field name="name"/>
-                    <field name="list_price"/>
-                </tree>
-            </field>
-        </record>
-
-        <!-- Invoices Tree View-->
-
-        <record id="view_invoice_tree" model="ir.ui.view">
-            <field name="name">myaccount.invoice.tree</field>
-            <field name="model">myaccount.move</field>
-            <field name="arch" type="xml">
-                <tree string="Invoices"
-                      decoration-info="state == 'draft'"
-                      decoration-muted="state == 'cancel'">
-                    <field name="name"/>
-                    <field name="partner_id" invisible="1"/>
-                    <field name="invoice_date" optional="show"
-                           invisible="context.get('default_type') not in ('in_invoice', 'in_refund','in_receipt')"
-                           string="Bill Date"/>
-                    <field name="invoice_date" optional="show"
-                           string="Invoice Date"/>
-                    <field name="state" optional="show"/>
-                    <field name="type" invisible="context.get('default_type', True)"/>
-                </tree>
             </field>
         </record>
 
