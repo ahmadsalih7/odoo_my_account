@@ -246,6 +246,32 @@
                             </group>
                         </group>
                         <notebook>
+                            <page
+                                    string="Invoice lines"
+                                    attrs="{'invisible': [('type', '=', 'entry')]}">
+                                <field name="invoice_line_ids"
+                                       mode="tree">
+                                    <tree editable="bottom">
+                                        <!-- Displayed fields -->
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                        <field name="account_id"/>
+                                        <field name="quantity"/>
+                                        <field name="price_unit" string="Price"/>
+                                        <field name="discount" string="Disc.%"/>
+                                        <field name="price_subtotal"
+                                               string="Subtotal"/>
+
+                                        <!-- Others fields -->
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="debit" invisible="1"/>
+                                        <field name="credit" invisible="1"/>
+                                        <field name="date" invisible="1"/>
+                                        <field name="company_id" invisible="1"/>
+                                        <field name="company_currency_id" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
                             <page string="Journal Items">
                                 <field name="line_ids"/>
                             </page>

@@ -13,10 +13,18 @@ class my_accountMoveLine(models.Model):
     company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id, readonly=True)
     company_currency_id = fields.Many2one(related='company_id.currency_id', string='Company Currency', readonly=True,
                                           store=True)
+    date = fields.Date(related='move_id.date', store=True, readonly=True, index=True, copy=False)
     debit = fields.Monetary(string='Debit', default=0.0, currency_field='company_currency_id')
     credit = fields.Monetary(string='Credit', default=0.0, currency_field='company_currency_id')
     move_id = fields.Many2one('myaccount.move')
     balance = fields.Monetary(string='Balance', default=0.0, currency_field='company_currency_id')
+
+    product_id = fields.Many2one('my_product.template', string="Product")
+    quantity  =  fields.Float(string='Quantity', default=1.0)
+    price_unit = fields.Float(string='Unit Price', digits='Product Price')
+    discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0)
+    price_subtotal = fields.Monetary(string='Subtotal', store=True, readonly=True,
+                                     currency_field='company_currency_id')
 
     # -----------------------------
     # Helpers
@@ -82,7 +90,7 @@ class my_accountMove(models.Model):
 
     invoice_date = fields.Date(string='Invoice/Bill Date', copy=False)
     invoice_line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Invoice lines',
-                                       copy=False, readonly=True)
+                                       copy=False)
 
     def action_post(self):
         self.write({'state': 'posted'})
