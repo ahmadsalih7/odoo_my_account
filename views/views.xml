@@ -211,15 +211,39 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
                     </header>
                     <sheet>
-                        <div class="oe_title">
+                        <!-- Invisible fields -->
+                        <field name="type" invisible="1"/>
+
+                        <div>
+                            <!-- Invoice Draft header -->
+                            <h1>
+                                <span attrs="{'invisible': ['|', ('type', '!=', 'out_invoice'), ('state', '!=', 'draft')]}">
+                                    Draft Invoice
+                                </span>
+                            </h1>
+                        </div>
+                        <div class="oe_title" attrs="{'invisible': [('type', '!=', 'entry')]}">
                             <h1>
                                 <field name="name"/>
                             </h1>
                         </div>
                         <group>
-                            <field name="date"/>
-                            <field name="ref"/>
+                            <group>
+                                <div class="o_td_label">
+                                    <!-- When selling the partner is called customer -->
+                                    <label for="partner_id" string="Customer" style="font-weight:bold;"
+                                           attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
+                                </div>
+                                <field name="partner_id"
+                                       attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}" nolabel="1"/>
+                                <field name="ref"/>
+                            </group>
+                            <group>
+                                <field name="date" attrs="{'invisible': [('type', 'not in', ('entry'))]}"/>
+                                <field name="invoice_date"
+                                       attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
 
+                            </group>
                         </group>
                         <notebook>
                             <page string="Journal Items">

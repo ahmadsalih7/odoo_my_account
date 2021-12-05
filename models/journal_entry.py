@@ -80,7 +80,7 @@ class my_accountMove(models.Model):
     # Invoice related fields
     # =========================================================
 
-    invoice_date = fields.Date(string='Invoice/Bill Date', readonly=True, copy=False)
+    invoice_date = fields.Date(string='Invoice/Bill Date', copy=False)
     invoice_line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Invoice lines',
                                        copy=False, readonly=True)
 
