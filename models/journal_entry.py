@@ -45,22 +45,41 @@ class my_accountMoveLine(models.Model):
         else:
             self.balance = self.credit
 
+    def _get_price_total_and_subtotal(self):
+        price_unit = self.price_unit
+        quantity =self.quantity
+        discount = self.discount
+
+        # Compute 'price_subtotal'.
+        price_unit_wo_discount = price_unit * (1 - (discount / 100.0))
+        subtotal = quantity * price_unit_wo_discount
+
+        return {'price_subtotal': subtotal}
+
     # -----------------------------
     # On change methods
     # -----------------------------
 
     @api.onchange('debit')
-    def onChangeDebit(self):
+    def on_change_debit(self):
         if self.debit:
             self.credit = 0.0
         self.recompute_fields()
 
     @api.onchange('credit')
-    def onChangeCredit(self):
+    def on_change_credit(self):
         if self.credit:
             self.debit = 0.0
         self.recompute_fields()
 
+    @api.onchange('product_id')
+    def on_change_product_id(self):
+        self.price_unit = self.product_id.list_price
+
+    @api.onchange('quantity', 'discount', 'price_unit')
+    def _onchange_price_subtotal(self):
+        for line in self:
+            line.update(line._get_price_total_and_subtotal())
 
 class my_accountMove(models.Model):
     _name = "myaccount.move"
