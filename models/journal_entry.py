@@ -115,18 +115,18 @@ class my_accountMove(models.Model):
     invoice_line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Invoice lines',
                                        copy=False)
 
-    def action_post(self):
-        self.write({'state': 'posted'})
-
-    def action_draft(self):
-        self.write({'state': 'draft'})
-
     # =========================================================
     # Amount fields fields
     # =========================================================
     amount_total = fields.Monetary(string='Total', store=True, readonly=True,
                                    compute='_compute_amount',
                                    currency_field='company_currency_id')
+
+    def action_post(self):
+        self.write({'state': 'posted'})
+
+    def action_draft(self):
+        self.write({'state': 'draft'})
 
     @api.model
     def create(self, vals):
