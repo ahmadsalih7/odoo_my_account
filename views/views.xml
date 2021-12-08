@@ -30,6 +30,8 @@
                     <field name="date"/>
                     <field name="ref"/>
                     <field name="line_ids"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -131,7 +133,6 @@
             <field name="view_id" ref="view_invoice_tree"/>
             <field name="domain">[('type', '=', 'out_invoice')]</field>
             <field name="context">{'default_type': 'out_invoice'}</field>
-
         </record>
 
         <!-- ######################  Form views  ##################################  -->
@@ -267,10 +268,15 @@
                                         <field name="debit" invisible="1"/>
                                         <field name="credit" invisible="1"/>
                                         <field name="date" invisible="1"/>
-                                        <field name="company_id" invisible="1"/>
-                                        <field name="company_currency_id" invisible="1"/>
                                     </tree>
                                 </field>
+                                <!-- Totals (only invoices / receipts) -->
+                                <field name="company_id" invisible="1"/>
+                                <field name="company_currency_id" invisible="1"/>
+                                <group class="oe_subtotal_footer"
+                                       attrs="{'invisible': [('type', '!=', 'out_invoice')]}">
+                                           <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                                </group>
                             </page>
                             <page string="Journal Items">
                                 <field name="line_ids"/>

@@ -20,7 +20,7 @@ class my_accountMoveLine(models.Model):
     balance = fields.Monetary(string='Balance', default=0.0, currency_field='company_currency_id')
 
     product_id = fields.Many2one('my_product.template', string="Product")
-    quantity  =  fields.Float(string='Quantity', default=1.0)
+    quantity = fields.Float(string='Quantity', default=1.0)
     price_unit = fields.Float(string='Unit Price', digits='Product Price')
     discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0)
     price_subtotal = fields.Monetary(string='Subtotal', store=True, readonly=True,
@@ -45,6 +45,7 @@ class my_accountMoveLine(models.Model):
         else:
             self.balance = self.credit
 
+    @api.model
     def _get_price_total_and_subtotal(self):
         price_unit = self.price_unit
         quantity =self.quantity
@@ -92,6 +93,9 @@ class my_accountMove(models.Model):
     ], string='Type', required=True, store=True, readonly=True, tracking=True,
         default="entry", change_default=True)
     partner_id = fields.Many2one('res.partner', string='Partner', ondelete='restrict')
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id, readonly=True)
+    company_currency_id = fields.Many2one(related='company_id.currency_id', string='Company Currency', readonly=True,
+                                          store=True)
     name = fields.Char(string='Number', required=True, copy=False, readonly=True, default=lambda self: _("New"))
     date = fields.Date(string='Date', required=True, index=True, readonly=True, default=fields.Date.context_today)
     ref = fields.Char(string='Move Ref', copy=False)
@@ -117,8 +121,24 @@ class my_accountMove(models.Model):
     def action_draft(self):
         self.write({'state': 'draft'})
 
+    # =========================================================
+    # Amount fields fields
+    # =========================================================
+    amount_total = fields.Monetary(string='Total', store=True, readonly=True,
+                                   compute='_compute_amount',
+                                   currency_field='company_currency_id')
+
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
             vals['name'] = self.env['ir.sequence'].next_by_code('myaccount.move') or _('New')
         return super(my_accountMove, self).create(vals)
+
+    @api.depends('invoice_line_ids.price_subtotal')
+    def _compute_amount(self):
+        for move in self:
+            move.amount_total = 0.0
+            total = 0
+            for line in move.invoice_line_ids :
+                total += line.price_subtotal
+            move.amount_total = total
