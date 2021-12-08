@@ -261,7 +261,7 @@
                                         <field name="price_unit" string="Price"/>
                                         <field name="discount" string="Disc.%"/>
                                         <field name="price_subtotal"
-                                               string="Subtotal"/>
+                                               string="Subtotal" force_save="1"/>
 
                                         <!-- Others fields -->
                                         <field name="partner_id" invisible="1"/>
@@ -275,7 +275,7 @@
                                 <field name="company_currency_id" invisible="1"/>
                                 <group class="oe_subtotal_footer"
                                        attrs="{'invisible': [('type', '!=', 'out_invoice')]}">
-                                           <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                                           <field name="amount_total" force_save="1" class="oe_subtotal_footer_separator"/>
                                 </group>
                             </page>
                             <page string="Journal Items">
