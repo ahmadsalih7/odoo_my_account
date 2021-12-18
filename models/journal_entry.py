@@ -133,7 +133,11 @@ class my_accountMove(models.Model):
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('myaccount.move') or _('New')
+            print(vals)
+            if vals.get('type') == 'entry':
+                vals['name'] = self.env['ir.sequence'].next_by_code('myaccount.move') or _('New')
+            elif vals.get('type') == 'out_invoice':
+                vals['name'] = self.env['ir.sequence'].next_by_code('myaccount.move.invoices') or _('New')
         return super(my_accountMove, self).create(vals)
 
     @api.depends('invoice_line_ids.price_subtotal')
