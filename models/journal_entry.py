@@ -106,6 +106,8 @@ class my_accountMove(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', required=True, readonly=True, copy=False, tracking=True,
         default='draft')
+    journal_id = fields.Many2one('myaccount.journal', string='Journal', required=True, readonly=True,
+                                 states={'draft': [('readonly', False)]})
 
     # =========================================================
     # Invoice related fields

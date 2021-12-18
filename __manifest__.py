@@ -28,6 +28,7 @@
         'security/ir.model.access.csv',
         'data/account_tags.xml',
         'data/data.xml',
+        'data/journal.xml',
         'wizard/myaccount_move_reversal_view.xml',
         'views/views.xml',
         'views/templates.xml',

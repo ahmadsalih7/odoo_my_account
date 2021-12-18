@@ -1,0 +1,21 @@
+<odoo>
+    <data>
+        <!-- My Account Journal !-->
+        <record id="myaccount_journal_customer_invoices" model="myaccount.journal">
+            <field name="name">Customer Invoices</field>
+            <field name="code">INV</field>
+            <field name="active">true</field>
+            <field name="type">sale</field>
+            <field name="sequence_id" ref="sequence_invoices"/>
+        </record>
+
+        <record id="myaccount_journal_miscellaneous_operations" model="myaccount.journal">
+            <field name="name">Miscellaneous Operations</field>
+            <field name="code">MISC</field>
+            <field name="active">true</field>
+            <field name="type">general</field>
+            <field name="sequence_id" ref="sequence_journal_entries"/>
+        </record>
+
+    </data>
+</odoo>

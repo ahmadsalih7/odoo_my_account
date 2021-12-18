@@ -8,5 +8,13 @@
             <field name="padding">4</field>
             <field eval="False" name="company_id"/>
         </record>
+        <!-- Sequence for Invoices !-->
+        <record id="sequence_invoices" model="ir.sequence">
+            <field name="name">Invoices</field>
+            <field name="code">myaccount.move.invoices</field>
+            <field name="prefix">INV/%(year)s/</field>
+            <field name="padding">4</field>
+            <field eval="False" name="company_id"/>
+        </record>
     </data>
 </odoo>
