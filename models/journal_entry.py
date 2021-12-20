@@ -96,7 +96,7 @@ class my_accountMove(models.Model):
     company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id, readonly=True)
     company_currency_id = fields.Many2one(related='company_id.currency_id', string='Company Currency', readonly=True,
                                           store=True)
-    name = fields.Char(string='Number', required=True, copy=False, readonly=True, default=lambda self: _("New"))
+    name = fields.Char(string='Number', required=True, copy=False, readonly=True, default='/')
     date = fields.Date(string='Date', required=True, index=True, readonly=True, default=fields.Date.context_today)
     ref = fields.Char(string='Move Ref', copy=False)
     line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Journal Items')
@@ -125,7 +125,16 @@ class my_accountMove(models.Model):
                                    currency_field='company_currency_id')
 
     def action_post(self):
-        self.write({'state': 'posted'})
+        if self.name == '/':
+            # if it's a new record
+            if self.type == 'entry':
+                name = self.env['ir.sequence'].next_by_code('myaccount.move') or '/'
+            elif self.type == 'out_invoice':
+               name = self.env['ir.sequence'].next_by_code('myaccount.move.invoices') or '/'
+        else:
+            name = self.name
+        self.write({'state': 'posted',
+                    'name': name})
 
     def action_draft(self):
         self.write({'state': 'draft'})
@@ -149,16 +158,6 @@ class my_accountMove(models.Model):
             else:
                 result.append((move.id, move.name))
         return result
-
-    @api.model
-    def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            print(vals)
-            if vals.get('type') == 'entry':
-                vals['name'] = self.env['ir.sequence'].next_by_code('myaccount.move') or _('New')
-            elif vals.get('type') == 'out_invoice':
-                vals['name'] = self.env['ir.sequence'].next_by_code('myaccount.move.invoices') or _('New')
-        return super(my_accountMove, self).create(vals)
 
     @api.depends('invoice_line_ids.price_subtotal')
     def _compute_amount(self):
