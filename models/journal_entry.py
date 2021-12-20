@@ -117,6 +117,13 @@ class my_accountMove(models.Model):
     invoice_line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Invoice lines',
                                        copy=False)
 
+    invoice_payment_state = fields.Selection(selection=[
+        ('not_paid', 'Not Paid'),
+        ('in_payment', 'In Payment'),
+        ('paid', 'Paid')],
+        string='Payment', store=True, readonly=True, copy=False, tracking=True,
+        default='not_paid')
+
     # =========================================================
     # Amount fields fields
     # =========================================================
@@ -138,6 +145,9 @@ class my_accountMove(models.Model):
 
     def action_draft(self):
         self.write({'state': 'draft'})
+
+    def action_invoice_register_payment(self):
+        self.write({'invoice_payment_state': 'in_payment'})
 
     def _get_move_display_name(self):
         draft_name = ''

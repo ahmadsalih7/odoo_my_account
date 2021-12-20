@@ -85,6 +85,7 @@
                            string="Invoice Date"/>
                     <field name="state" optional="show"/>
                     <field name="type" invisible="context.get('default_type', True)"/>
+                    <field name="invoice_payment_state" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -209,11 +210,18 @@
                                 string="Reverse"
                                 type="action" class="btn-secondary"
                                 attrs="{'invisible': [('state', '!=', 'posted')]}"/>
+
+                        <!-- Register Payment (only invoices / receipts) -->
+                        <button name="action_invoice_register_payment" id="account_invoice_payment_btn"
+                                type="object" class="oe_highlight"
+                                attrs="{'invisible': ['|', '|', ('state', '!=', 'posted'), ('invoice_payment_state', '!=', 'not_paid'), ('type', 'not in', 'out_invoice')]}"
+                                string="Register Payment"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
                     </header>
                     <sheet>
                         <!-- Invisible fields -->
                         <field name="type" invisible="1" force_save="1"/>
+                        <field name="invoice_payment_state" invisible="1"/>
 
                         <div>
                             <!-- Invoice Draft header -->
@@ -241,7 +249,8 @@
                                            attrs="{'invisible': [('type', 'not in', 'entry')]}"/>
                                 </div>
                                 <field name="partner_id"
-                                       attrs="{'invisible': [('type', 'not in', ('out_invoice', 'entry'))]}" nolabel="1"/>
+                                       attrs="{'invisible': [('type', 'not in', ('out_invoice', 'entry'))]}"
+                                       nolabel="1"/>
                                 <field name="ref"/>
                             </group>
                             <group>
@@ -280,7 +289,7 @@
                                 <field name="company_currency_id" invisible="1"/>
                                 <group class="oe_subtotal_footer"
                                        attrs="{'invisible': [('type', '!=', 'out_invoice')]}">
-                                           <field name="amount_total" force_save="1" class="oe_subtotal_footer_separator"/>
+                                    <field name="amount_total" force_save="1" class="oe_subtotal_footer_separator"/>
                                 </group>
                             </page>
                             <page string="Journal Items">
