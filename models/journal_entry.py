@@ -130,6 +130,26 @@ class my_accountMove(models.Model):
     def action_draft(self):
         self.write({'state': 'draft'})
 
+    def _get_move_display_name(self):
+        draft_name = ''
+        if self.state == 'draft':
+            draft_name += {
+                'out_invoice': _('Draft Invoice'),
+                'entry': _('Draft Entry')
+            }[self.type]
+            draft_name += ' (* %s)' % str(self.id)
+        return draft_name
+
+    def name_get(self):
+        result = []
+        for move in self:
+            if move.state == 'draft':
+                name = move._get_move_display_name()
+                result.append((move.id, name))
+            else:
+                result.append((move.id, move.name))
+        return result
+
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):

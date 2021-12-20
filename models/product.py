@@ -19,3 +19,8 @@ class ProductTemplate(models.Model):
     list_price = fields.Float('Sales Price', default=1.0)
     description = fields.Text('Description')
 
+    def name_get(self):
+        result = []
+        for rec in self:
+            result.append((rec.id, f'[{rec.barcode}] - {rec.name}'))
+        return  result
