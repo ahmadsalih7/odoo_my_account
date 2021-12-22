@@ -87,6 +87,18 @@ class my_accountMove(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Journal Entries"
 
+
+    def _get_default_journal(self):
+        move_type = self._context.get('default_type')
+        journal_type = 'general'
+        if move_type == 'entry':
+            journal_type = 'general'
+        if move_type == 'out_invoice':
+            journal_type = 'sale'
+        domain = [('company_id', '=', self.env.user.company_id.id), ('type', '=', journal_type)]
+        journal = self.env['myaccount.journal'].search(domain, limit=1)
+        return journal
+
     type = fields.Selection(selection=[
         ('entry', 'Journal Entry'),
         ('out_invoice', 'Customer Invoice'),
@@ -106,8 +118,8 @@ class my_accountMove(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', required=True, readonly=True, copy=False, tracking=True,
         default='draft')
-    journal_id = fields.Many2one('myaccount.journal', string='Journal', required=True, readonly=True,
-                                 states={'draft': [('readonly', False)]})
+    journal_id = fields.Many2one('myaccount.journal', string='Journal', required=True, readonly=True, store=True,
+                                 states={'draft': [('readonly', False)]}, default=_get_default_journal)
 
     # =========================================================
     # Invoice related fields

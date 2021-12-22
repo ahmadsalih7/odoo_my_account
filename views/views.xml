@@ -257,7 +257,7 @@
                                 <field name="date" attrs="{'invisible': [('type', 'not in', ('entry'))]}"/>
                                 <field name="invoice_date"
                                        attrs="{'invisible': [('type', 'not in', ('out_invoice'))]}"/>
-
+                                <field name="journal_id"/>
                             </group>
                         </group>
                         <notebook>
