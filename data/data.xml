@@ -16,5 +16,23 @@
             <field name="padding">4</field>
             <field eval="False" name="company_id"/>
         </record>
+
+        <!-- Sequence for Cash !-->
+        <record id="sequence_cash" model="ir.sequence">
+            <field name="name">Cash</field>
+            <field name="code">myaccount.payment.cash</field>
+            <field name="prefix">CSH1/%(year)s/</field>
+            <field name="padding">4</field>
+            <field eval="False" name="company_id"/>
+        </record>
+        <!-- Sequence for bank !-->
+        <record id="sequence_bank" model="ir.sequence">
+            <field name="name">Bank</field>
+            <field name="code">myaccount.payment.bank</field>
+            <field name="prefix">BNK1/%(year)s/</field>
+            <field name="padding">4</field>
+            <field eval="False" name="company_id"/>
+        </record>
+
     </data>
 </odoo>

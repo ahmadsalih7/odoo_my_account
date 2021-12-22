@@ -17,5 +17,21 @@
             <field name="sequence_id" ref="sequence_journal_entries"/>
         </record>
 
+        <record id="myaccount_journal_cash" model="myaccount.journal">
+            <field name="name">Cash</field>
+            <field name="code">CSH</field>
+            <field name="active">true</field>
+            <field name="type">cash</field>
+            <field name="sequence_id" ref="sequence_cash"/>
+        </record>
+
+        <record id="myaccount_journal_bank" model="myaccount.journal">
+            <field name="name">Bank</field>
+            <field name="code">BNK</field>
+            <field name="active">true</field>
+            <field name="type">bank</field>
+            <field name="sequence_id" ref="sequence_bank"/>
+        </record>
+
     </data>
 </odoo>
