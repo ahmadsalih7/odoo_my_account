@@ -38,6 +38,7 @@ class MyAccountJournal(models.Model):
     ], required=True)
     sequence_id = fields.Many2one('ir.sequence', string='Entry Sequence',
                                   required=True, copy=False)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id, readonly=True)
     sequence = fields.Integer(default=10)
     sequence_number_next = fields.Integer(string='Next Number', compute='_compute_seq_number_next')
 

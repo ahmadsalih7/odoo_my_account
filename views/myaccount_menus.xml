@@ -12,6 +12,7 @@
 		<menuitem id="customers_first_menu" name="Customers" parent="menu_my_account" sequence="1" />
 		<menuitem id="products_action_menue" name="Products" parent="customers_first_menu" sequence="3" action="my_account.products_action_window" />
 		<menuitem id="invoices_action_menue" name="Invoices" parent="customers_first_menu" sequence="4" action="action_move_out_invoice_type" />
+		<menuitem id="payments_action_menue" name="Payments" parent="customers_first_menu" sequence="5" action="my_account.payment_action_window" />
 
 	</data>
 </odoo>

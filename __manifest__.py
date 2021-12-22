@@ -31,7 +31,7 @@
         'data/journal.xml',
         'wizard/myaccount_move_reversal_view.xml',
         'views/views.xml',
-        'views/templates.xml',
+        'views/my_payment_view.xml',
         'views/myaccount_menus.xml'
     ],
     # only loaded in demonstration mode

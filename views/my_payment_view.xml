@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--    Payment menue Action  -->
+    <record model="ir.actions.act_window" id="my_account.payment_action_window">
+        <field name="name">Payments</field>
+        <field name="res_model">myaccount.payment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--    Payment Form view  -->
+    <record id="payment_view_form" model="ir.ui.view">
+        <field name="name">payment.form</field>
+        <field name="model">myaccount.payment</field>
+        <field name="arch" type="xml">
+            <form string="Chart of Accounts List">
+                <sheet>
+                    <group>
+                        <field name="name" style="width:40%%"/>
+                        <field name="communication" style="width:40%%"/>
+                        <field name="payment_type" widget="radio"/>
+                        <field name="partner_type" style="width:40%%"/>
+                        <field name="partner_id" style="width:40%%"/>
+                        <field name="journal_id" style="width:40%%"/>
+
+                        <!--invisible fields-->
+                        <field name="state" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="company_currency_id" invisible="1"/>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Payment tree View-->
+
+    <record id="payment_view_tree" model="ir.ui.view">
+        <field name="name">payment.tree</field>
+        <field name="model">myaccount.payment</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date"/>
+                <field name="name"/>
+                <field name="journal_id"/>
+                <field name="payment_type"/>
+                <field name="partner_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>
