@@ -117,6 +117,7 @@
         <record model="ir.actions.act_window" id="my_account.move_action_window">
             <field name="name">Journal Entries</field>
             <field name="res_model">myaccount.move</field>
+            <field name="context">{'search_default_misc_filter':1}</field>
             <field name="view_mode">tree,form</field>
         </record>
 
@@ -357,5 +358,19 @@
             </field>
         </record>
 
+        <record id="view_account_move_filter" model="ir.ui.view">
+            <field name="name">account.move.select</field>
+            <field name="model">myaccount.move</field>
+            <field name="arch" type="xml">
+                <search string="Search Move">
+                    <field name="name" string="Journal Entry"/>
+                    <field name="date"/>
+                    <field name="partner_id"/>
+                    <field name="journal_id"/>
+                    <separator/>
+                    <filter string="Miscellaneous" name="misc_filter" domain="[('journal_id.type', '=', 'general')]"/>
+                </search>
+            </field>
+        </record>
     </data>
 </odoo>
