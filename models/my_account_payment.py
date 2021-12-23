@@ -7,8 +7,31 @@ class account_payment(models.Model):
     _name = "myaccount.payment"
     _description = "Payments"
 
+    @api.model
+    def default_get(self, fields):
+        rec = super(account_payment, self).default_get(fields)
+        active_id = self._context.get('active_id')
+        active_model = self._context.get('active_model')
+
+        # Check for selected invoices ids
+        if not active_id or active_model != 'account.move':
+            return rec
+
+        invoice = self.env['myaccount.move'].browse(active_id)
+        rec.update({
+            'communication': invoice.name,
+            'amount': invoice.amount_total,
+            'partner_id': invoice.partner_id.id,
+            'payment_type': 'inbound',
+            'partner_type': 'customer',
+
+        })
+        return rec
+
     name = fields.Char(readonly=True, copy=False)
     communication = fields.Char(string='Memo', readonly=True, states={'draft': [('readonly', False)]})
+    amount = fields.Monetary(string='Amount', required=True, readonly=True, states={'draft': [('readonly', False)]},
+                             tracking=True, currency_field='company_currency_id')
     date = fields.Date(string='Date', required=True, index=True, readonly=True, default=fields.Date.context_today)
     payment_type = fields.Selection(
         [('outbound', 'Send Money'), ('inbound', 'Receive Money'), ('transfer', 'Internal Transfer')],
@@ -34,10 +57,13 @@ class account_payment(models.Model):
     def action_register_payment(self):
         return {
             'name': _('Register Payment'),
-            'res_model': 'account.payment.register',
+            'res_model': 'myaccount.payment',
             'view_mode': 'form',
-            'view_id': self.env.ref('account.view_account_payment_invoice_form').id,
+            'view_id': self.env.ref('my_account.view_account_payment_invoice_form').id,
             'context': self.env.context,
             'target': 'new',
             'type': 'ir.actions.act_window',
         }
+
+    def Validate(self):
+        pass

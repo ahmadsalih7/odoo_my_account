@@ -159,7 +159,10 @@ class my_accountMove(models.Model):
         self.write({'state': 'draft'})
 
     def action_invoice_register_payment(self):
-        self.write({'invoice_payment_state': 'in_payment'})
+        return self.env['myaccount.payment']\
+            .with_context(active_ids=self.ids, active_model='account.move', active_id=self.id)\
+            .action_register_payment()
+        #self.write({'invoice_payment_state': 'in_payment'})
 
     def _get_move_display_name(self):
         draft_name = ''
