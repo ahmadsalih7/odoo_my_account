@@ -47,8 +47,17 @@ class MyAccountJournal(models.Model):
     sequence_id = fields.Many2one('ir.sequence', string='Entry Sequence',
                                   required=True, copy=False)
     company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id, readonly=True)
+    company_currency_id = fields.Many2one(related='company_id.currency_id', string='Company Currency', readonly=True,
+                                          store=True)
     sequence = fields.Integer(default=10)
     sequence_number_next = fields.Integer(string='Next Number', compute='_compute_seq_number_next')
+
+    def name_get(self):
+        """ Show currency beside journal name """
+        result = []
+        for rec in self:
+            result.append((rec.id, f'{rec.name} ({rec.company_currency_id.name})'))
+        return result
 
     def _compute_seq_number_next(self):
         '''Compute 'sequence_number_next' according to the current sequence in use,

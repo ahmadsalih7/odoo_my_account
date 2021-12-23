@@ -26,10 +26,14 @@
             <field name="name">JE.tree</field>
             <field name="model">myaccount.move</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree string="Journal Entries" decoration-info="state == 'draft'">
                     <field name="date"/>
+                    <field name="name"/>
+                    <field name="partner_id"/>
                     <field name="ref"/>
-                    <field name="line_ids"/>
+                    <field name="journal_id"/>
+                    <field name="amount_total" sum="Total"/>
+                    <field name="state"/>
                     <field name="company_id" invisible="1"/>
                     <field name="company_currency_id" invisible="1"/>
                 </tree>
