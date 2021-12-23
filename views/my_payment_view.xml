@@ -17,13 +17,19 @@
             <form string="Chart of Accounts List">
                 <sheet>
                     <group>
-                        <field name="name" style="width:40%%"/>
-                        <field name="communication" style="width:40%%"/>
-                        <field name="payment_type" widget="radio"/>
-                        <field name="partner_type" style="width:40%%"/>
-                        <field name="partner_id" style="width:40%%"/>
-                        <field name="journal_id" style="width:40%%"/>
-
+                        <group invisible="context.get('active_model') == 'account.move'">
+                            <field name="name" style="width:40%%"/>
+                            <field name="payment_type" widget="radio"/>
+                            <field name="partner_type" style="width:40%%"/>
+                            <field name="partner_id" style="width:40%%"/>
+                        </group>
+                        <group>
+                            <field name="journal_id"/>
+                        </group>
+                        <group>
+                            <field name="communication"/>
+                            <field name="amount"/>
+                        </group>
                         <!--invisible fields-->
                         <field name="state" invisible="1"/>
                         <field name="company_id" invisible="1"/>
