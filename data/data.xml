@@ -34,5 +34,14 @@
             <field eval="False" name="company_id"/>
         </record>
 
+        <!-- Sequence for Customer invoices !-->
+        <record id="sequence_bank" model="ir.sequence">
+            <field name="name">Payments customer invoices sequence</field>
+            <field name="code">account.payment.customer.invoice</field>
+            <field name="prefix">CUST.IN/%(year)s/</field>
+            <field name="padding">4</field>
+            <field eval="False" name="company_id"/>
+        </record>
+
     </data>
 </odoo>
