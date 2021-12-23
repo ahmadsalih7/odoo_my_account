@@ -77,19 +77,14 @@
             <field name="name">myaccount.invoice.tree</field>
             <field name="model">myaccount.move</field>
             <field name="arch" type="xml">
-                <tree string="Invoices"
-                      decoration-info="state == 'draft'"
-                      decoration-muted="state == 'cancel'">
+                <tree string="Invoices" decoration-info="state == 'draft'">
                     <field name="name"/>
-                    <field name="partner_id" invisible="1"/>
+                    <field name="partner_id" />
                     <field name="invoice_date" optional="show"
-                           invisible="context.get('default_type') not in ('in_invoice', 'in_refund','in_receipt')"
-                           string="Bill Date"/>
-                    <field name="invoice_date" optional="show"
+                           invisible="context.get('default_type') != 'out_invoice'"
                            string="Invoice Date"/>
-                    <field name="state" optional="show"/>
-                    <field name="type" invisible="context.get('default_type', True)"/>
-                    <field name="invoice_payment_state" invisible="1"/>
+                    <field name="amount_total"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -130,7 +125,7 @@
         </record>
 
 
-        <!-- Products action -->
+        <!-- invoices action -->
 
         <record id="action_move_out_invoice_type" model="ir.actions.act_window">
             <field name="name">Invoices</field>
