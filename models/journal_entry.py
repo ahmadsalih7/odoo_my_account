@@ -7,7 +7,7 @@ class my_accountMoveLine(models.Model):
     _name = "myaccount.move.line"
     _description = "Journal item"
 
-    account_id = fields.Many2one('myaccount.myaccount')
+    account_id = fields.Many2one('myaccount.myaccount', required=True)
     partner_id = fields.Many2one('res.partner', string='Partner', ondelete='restrict')
     name = fields.Char(string='label')
     company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id, readonly=True)
@@ -26,10 +26,22 @@ class my_accountMoveLine(models.Model):
     price_subtotal = fields.Monetary(string='Subtotal', store=True, readonly=True,
                                      currency_field='company_currency_id')
 
+    @api.model
+    def default_get(self, default_fields):
+        # OVERRIDE
+        values = super(my_accountMoveLine, self).default_get(default_fields)
+        if 'account_id' in default_fields \
+                and not values.get('account_id') \
+                and self._context.get('default_type') == 'out_invoice':
+            # Fill missing 'account_id'.
+            journal = self.env['myaccount.journal'].browse(
+                self._context.get('default_journal_id'))
+            values['account_id'] = journal.default_credit_account_id.id
+        return values
+
     # -----------------------------
     # Helpers
     # -----------------------------
-
     def recompute_fields(self):
         if not self.debit and not self.credit and not self.balance:
             current_balance = sum(line.balance for line in self.move_id.line_ids)
@@ -86,7 +98,6 @@ class my_accountMove(models.Model):
     _name = "myaccount.move"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Journal Entries"
-
 
     def _get_default_journal(self):
         move_type = self._context.get('default_type')

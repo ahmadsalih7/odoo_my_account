@@ -36,6 +36,9 @@ class MyAccountJournal(models.Model):
     name = fields.Char(string='Journal Name', required=True)
     code = fields.Char(string='Short Code', size=5, required=True,
                        help="The journal entries of this journal will be named using this prefix.")
+    sequence = fields.Integer(default=10)
+    sequence_number_next = fields.Integer(string='Next Number', compute='_compute_seq_number_next')
+
     active = fields.Boolean(default=True, help="Set active to false to hide the Journal without removing it.")
     type = fields.Selection([
         ('sale', 'Sales'),
@@ -44,13 +47,20 @@ class MyAccountJournal(models.Model):
         ('bank', 'Bank'),
         ('general', 'Miscellaneous'),
     ], required=True)
+
     sequence_id = fields.Many2one('ir.sequence', string='Entry Sequence',
                                   required=True, copy=False)
     company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id, readonly=True)
     company_currency_id = fields.Many2one(related='company_id.currency_id', string='Company Currency', readonly=True,
                                           store=True)
-    sequence = fields.Integer(default=10)
-    sequence_number_next = fields.Integer(string='Next Number', compute='_compute_seq_number_next')
+    default_credit_account_id = fields.Many2one('account.account', string='Default Credit Account',
+                                                domain=[('deprecated', '=', False)],
+                                                help="It acts as a default account for credit amount",
+                                                ondelete='restrict')
+    default_debit_account_id = fields.Many2one('account.account', string='Default Debit Account',
+                                               domain="[('deprecated', '=', False), ('company_id', '=', company_id)]",
+                                               help="It acts as a default account for debit amount",
+                                               ondelete='restrict')
 
     def name_get(self):
         """ Show currency beside journal name """

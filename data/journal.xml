@@ -7,6 +7,8 @@
             <field name="active">true</field>
             <field name="type">sale</field>
             <field name="sequence_id" ref="sequence_invoices"/>
+            <field name="default_credit_account_id" ref="__import__.47910_general_product_sales"/>
+            <field name="default_debit_account_id" ref="__import__.47910_general_product_sales"/>
         </record>
 
         <record id="myaccount_journal_miscellaneous_operations" model="myaccount.journal">
