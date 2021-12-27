@@ -14,6 +14,13 @@ class my_account(models.Model):
     reconcile = fields.Boolean(string='Allow Reconciliation')
     deprecate = fields.Boolean(string='Deprecated')
 
+    internal_type = fields.Selection([
+        ('other', 'Regular'),
+        ('receivable', 'Receivable'),
+        ('payable', 'Payable'),
+        ('liquidity', 'Liquidity'),
+    ], required=True, default='other', string="Internal Type", store=True, readonly=True)
+
     def name_get(self):
         """ Show code beside account name """
         result = []
