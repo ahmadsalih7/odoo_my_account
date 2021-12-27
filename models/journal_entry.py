@@ -60,7 +60,7 @@ class my_accountMoveLine(models.Model):
     @api.model
     def _get_price_total_and_subtotal(self):
         price_unit = self.price_unit
-        quantity =self.quantity
+        quantity = self.quantity
         discount = self.discount
 
         # Compute 'price_subtotal'.
@@ -93,6 +93,7 @@ class my_accountMoveLine(models.Model):
     def _onchange_price_subtotal(self):
         for line in self:
             line.update(line._get_price_total_and_subtotal())
+
 
 class my_accountMove(models.Model):
     _name = "myaccount.move"
@@ -160,7 +161,7 @@ class my_accountMove(models.Model):
             if self.type == 'entry':
                 name = self.env['ir.sequence'].next_by_code('myaccount.move') or '/'
             elif self.type == 'out_invoice':
-               name = self.env['ir.sequence'].next_by_code('myaccount.move.invoices') or '/'
+                name = self.env['ir.sequence'].next_by_code('myaccount.move.invoices') or '/'
         else:
             name = self.name
         self.write({'state': 'posted',
@@ -170,10 +171,10 @@ class my_accountMove(models.Model):
         self.write({'state': 'draft'})
 
     def action_invoice_register_payment(self):
-        return self.env['myaccount.payment']\
-            .with_context(active_ids=self.ids, active_model='account.move', active_id=self.id)\
+        return self.env['myaccount.payment'] \
+            .with_context(active_ids=self.ids, active_model='account.move', active_id=self.id) \
             .action_register_payment()
-        #self.write({'invoice_payment_state': 'in_payment'})
+        # self.write({'invoice_payment_state': 'in_payment'})
 
     def _get_move_display_name(self):
         draft_name = ''
@@ -200,6 +201,6 @@ class my_accountMove(models.Model):
         for move in self:
             move.amount_total = 0.0
             total = 0
-            for line in move.invoice_line_ids :
+            for line in move.invoice_line_ids:
                 total += line.price_subtotal
             move.amount_total = total
