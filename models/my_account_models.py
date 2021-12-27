@@ -53,11 +53,11 @@ class MyAccountJournal(models.Model):
     company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id, readonly=True)
     company_currency_id = fields.Many2one(related='company_id.currency_id', string='Company Currency', readonly=True,
                                           store=True)
-    default_credit_account_id = fields.Many2one('account.account', string='Default Credit Account',
+    default_credit_account_id = fields.Many2one('myaccount.myaccount', string='Default Credit Account',
                                                 domain=[('deprecated', '=', False)],
                                                 help="It acts as a default account for credit amount",
                                                 ondelete='restrict')
-    default_debit_account_id = fields.Many2one('account.account', string='Default Debit Account',
+    default_debit_account_id = fields.Many2one('myaccount.myaccount', string='Default Debit Account',
                                                domain="[('deprecated', '=', False), ('company_id', '=', company_id)]",
                                                help="It acts as a default account for debit amount",
                                                ondelete='restrict')

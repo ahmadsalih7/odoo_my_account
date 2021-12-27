@@ -266,7 +266,7 @@
                                     attrs="{'invisible': [('type', '=', 'entry')]}">
                                 <field name="invoice_line_ids" context="{'default_type': context.get('default_type'), 'default_journal_id': journal_id}"
                                        mode="tree">
-                                    <tree editable="bottom">
+                                    <tree editable="bottom" string="Journal Items">
                                         <!-- Displayed fields -->
                                         <field name="product_id"/>
                                         <field name="name"/>
@@ -293,7 +293,15 @@
                                 </group>
                             </page>
                             <page string="Journal Items">
-                                <field name="line_ids"/>
+                                <field name="line_ids">
+                                    <tree editable="bottom" string="Journal Items">
+                                        <field name="account_id" />
+                                        <field name="partner_id" />
+                                        <field name="name" />
+                                        <field name="debit" />
+                                        <field name="credit" />
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>
