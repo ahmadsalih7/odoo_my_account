@@ -217,12 +217,14 @@ class my_accountMove(models.Model):
                 ]
                 return self.env['myaccount.myaccount'].search(domain, limit=1)
 
-        def _compute_journal_lines(self, amount):
-            pass
+        def _update_journal_lines(self, journal_line, amount):
+            journal_line.write({
+                'credit': amount
+            })
 
         def _update_main_account(self, terms_line, amount, account_id):
             if terms_line:
-                terms_line.credit = amount
+                terms_line.debit = amount
             else:
                 # create new
                 created_line = self.env['myaccount.move.line'].create({
@@ -242,6 +244,7 @@ class my_accountMove(models.Model):
 
         account_id = _get_main_account(self, existing_terms_lines)
         _update_main_account(self, existing_terms_lines, subtotal_sum, account_id)
+        _update_journal_lines(self, other_journal_lines, subtotal_sum)
 
     # -----------------------------
     # On change methods
