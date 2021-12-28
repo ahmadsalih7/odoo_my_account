@@ -204,3 +204,52 @@ class my_accountMove(models.Model):
             for line in move.invoice_line_ids:
                 total += line.price_subtotal
             move.amount_total = total
+
+    def _recompute_journal_lines(self):
+        def _get_main_account(self, existing_term_lines):
+            if existing_term_lines:
+                # Retrieve account from previous lines in order to allow the user to set a custom one.
+                return existing_term_lines[0].account_id
+            else:
+                # Search new account.
+                domain = [
+                    ('internal_type', '=', 'receivable'),
+                ]
+                return self.env['myaccount.myaccount'].search(domain, limit=1)
+
+        def _compute_journal_lines(self, amount):
+            pass
+
+        def _update_main_account(self, terms_line, amount, account_id):
+            if terms_line:
+                terms_line.credit = amount
+            else:
+                # create new
+                new_id = self.env['myaccount.move.line'].create({
+                    'move_id': self.id,
+                    'account_id': account_id.id,
+                    'credit': amount
+                })
+
+        existing_terms_lines = self.line_ids.filtered(
+            lambda line: line.account_id.internal_type == 'receivable')
+        other_journal_lines = self.line_ids.filtered(
+            lambda line: line.account_id.internal_type != 'receivable')
+
+        subtotal_sum = sum(other_journal_lines.mapped('price_subtotal'))
+        print(subtotal_sum)
+        if not existing_terms_lines or int(subtotal_sum) == 0:
+            print('returned.....')
+            return
+
+        account_id = _get_main_account(self, existing_terms_lines)
+        _update_main_account(self, existing_terms_lines, subtotal_sum, account_id)
+
+    # -----------------------------
+    # On change methods
+    # -----------------------------
+
+    @api.onchange('invoice_line_ids')
+    def _onchange_invoice_line_ids(self):
+        self.line_ids = self.invoice_line_ids
+        self._recompute_journal_lines()
