@@ -225,21 +225,19 @@ class my_accountMove(models.Model):
                 terms_line.credit = amount
             else:
                 # create new
-                new_id = self.env['myaccount.move.line'].create({
+                created_line = self.env['myaccount.move.line'].create({
                     'move_id': self.id,
                     'account_id': account_id.id,
-                    'credit': amount
+                    'debit': amount
                 })
+                terms_line += created_line
 
         existing_terms_lines = self.line_ids.filtered(
             lambda line: line.account_id.internal_type == 'receivable')
         other_journal_lines = self.line_ids.filtered(
             lambda line: line.account_id.internal_type != 'receivable')
-
         subtotal_sum = sum(other_journal_lines.mapped('price_subtotal'))
-        print(subtotal_sum)
-        if not existing_terms_lines or int(subtotal_sum) == 0:
-            print('returned.....')
+        if not other_journal_lines or int(subtotal_sum) == 0:
             return
 
         account_id = _get_main_account(self, existing_terms_lines)
@@ -251,5 +249,6 @@ class my_accountMove(models.Model):
 
     @api.onchange('invoice_line_ids')
     def _onchange_invoice_line_ids(self):
-        self.line_ids = self.invoice_line_ids
-        self._recompute_journal_lines()
+        if self.invoice_line_ids and self.invoice_line_ids[0].product_id:
+            self.line_ids = self.invoice_line_ids
+            self._recompute_journal_lines()
