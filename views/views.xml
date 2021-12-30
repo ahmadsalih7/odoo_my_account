@@ -18,6 +18,7 @@
                     <field name="debit" sum="Total Debit"/>
                     <field name="credit" sum="Total Credit"/>
                     <field name="balance" invisible="1"/>
+                    <field name="exclude_from_invoice_tab" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -269,7 +270,7 @@
                                     <tree editable="bottom" string="Journal Items">
                                         <!-- Displayed fields -->
                                         <field name="product_id"/>
-                                        <field name="name"/>
+                                        <field name="name" attrs="{'required': [('parent.type', '==', 'out_invoice')]}"/>
                                         <field name="account_id"/>
                                         <field name="quantity"/>
                                         <field name="price_unit" string="Price"/>
@@ -282,6 +283,7 @@
                                         <field name="debit" invisible="1"/>
                                         <field name="credit" invisible="1"/>
                                         <field name="date" invisible="1"/>
+                                        <field name="exclude_from_invoice_tab" invisible="1"/>
                                     </tree>
                                 </field>
                                 <!-- Totals (only invoices / receipts) -->
@@ -300,6 +302,8 @@
                                         <field name="name" />
                                         <field name="debit" />
                                         <field name="credit" />
+
+                                        <field name="exclude_from_invoice_tab" invisible="1"/>
                                     </tree>
                                 </field>
                             </page>

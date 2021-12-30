@@ -10,6 +10,7 @@ class my_accountMoveLine(models.Model):
     account_id = fields.Many2one('myaccount.myaccount', required=True)
     partner_id = fields.Many2one('res.partner', string='Partner', ondelete='restrict')
     name = fields.Char(string='label')
+    exclude_from_invoice_tab = fields.Boolean()
     company_id = fields.Many2one('res.company', default=lambda self: self.env.user.company_id.id, readonly=True)
     company_currency_id = fields.Many2one(related='company_id.currency_id', string='Company Currency', readonly=True,
                                           store=True)
@@ -88,12 +89,12 @@ class my_accountMoveLine(models.Model):
     @api.onchange('product_id')
     def on_change_product_id(self):
         self.price_unit = self.product_id.list_price
+        self.name = self.product_id.name
 
     @api.onchange('quantity', 'discount', 'price_unit')
     def _onchange_price_subtotal(self):
         for line in self:
             line.update(line._get_price_total_and_subtotal())
-
 
 class my_accountMove(models.Model):
     _name = "myaccount.move"
@@ -123,7 +124,7 @@ class my_accountMove(models.Model):
     name = fields.Char(string='Number', required=True, copy=False, readonly=True, default='/')
     date = fields.Date(string='Date', required=True, index=True, readonly=True, default=fields.Date.context_today)
     ref = fields.Char(string='Move Ref', copy=False)
-    line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Journal Items')
+    line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Journal Items', copy=True)
     state = fields.Selection(selection=[
         ('draft', 'Draft'),
         ('posted', 'Posted'),
@@ -139,6 +140,7 @@ class my_accountMove(models.Model):
 
     invoice_date = fields.Date(string='Invoice/Bill Date', copy=False)
     invoice_line_ids = fields.One2many('myaccount.move.line', 'move_id', string='Invoice lines',
+                                       domain=[('exclude_from_invoice_tab', '=', False)],
                                        copy=False)
 
     invoice_payment_state = fields.Selection(selection=[
@@ -218,33 +220,42 @@ class my_accountMove(models.Model):
                 return self.env['myaccount.myaccount'].search(domain, limit=1)
 
         def _update_journal_lines(self, journal_line, amount):
-            journal_line.write({
+            journal_line.update({
                 'credit': amount
             })
 
         def _update_main_account(self, terms_line, amount, account_id):
+            new_terms_lines = self.env['myaccount.move.line']
             if terms_line:
-                terms_line.debit = amount
-            else:
-                # create new
-                created_line = self.env['myaccount.move.line'].create({
-                    'move_id': self.id,
-                    'account_id': account_id.id,
+                # There is a receivable account then just update the amount
+                receivable_line = terms_line[0]   # In this case it must be only one line
+                receivable_line.update({
                     'debit': amount
                 })
-                terms_line += created_line
+            else:
+                # There is no receivable line then create new
+                receivable_line = self.env['myaccount.move.line'].create({
+                    'move_id': self.id,
+                    'account_id': account_id.id,
+                    'debit': amount,
+                    'exclude_from_invoice_tab': True,
+                })
+            new_terms_lines += receivable_line
+            return new_terms_lines
 
-        existing_terms_lines = self.line_ids.filtered(
-            lambda line: line.account_id.internal_type == 'receivable')
-        other_journal_lines = self.line_ids.filtered(
-            lambda line: line.account_id.internal_type != 'receivable')
+        existing_terms_lines = self.line_ids.filtered(lambda line: line.account_id.internal_type == 'receivable')
+        other_journal_lines = self.line_ids.filtered(lambda line: line.account_id.internal_type != 'receivable')
         subtotal_sum = sum(other_journal_lines.mapped('price_subtotal'))
-        if not other_journal_lines or int(subtotal_sum) == 0:
+        if not other_journal_lines:
+            self.line_ids -= existing_terms_lines
             return
 
         account_id = _get_main_account(self, existing_terms_lines)
-        _update_main_account(self, existing_terms_lines, subtotal_sum, account_id)
+        new_terms_lines = _update_main_account(self, existing_terms_lines, subtotal_sum, account_id)
         _update_journal_lines(self, other_journal_lines, subtotal_sum)
+
+        # Remove old terms lines that are no longer needed.
+        self.line_ids -= existing_terms_lines - new_terms_lines
 
     # -----------------------------
     # On change methods
@@ -252,6 +263,7 @@ class my_accountMove(models.Model):
 
     @api.onchange('invoice_line_ids')
     def _onchange_invoice_line_ids(self):
-        if self.invoice_line_ids and self.invoice_line_ids[0].product_id:
-            self.line_ids = self.invoice_line_ids
-            self._recompute_journal_lines()
+        self.line_ids = self.line_ids.filtered(lambda line: line.exclude_from_invoice_tab) + self.invoice_line_ids
+        self._recompute_journal_lines()
+        self.invoice_line_ids = self.line_ids.filtered(lambda line: not line.exclude_from_invoice_tab)
+
