@@ -69,6 +69,10 @@ class my_accountMoveLine(models.Model):
         subtotal = quantity * price_unit_wo_discount
 
         return {'price_subtotal': subtotal}
+    
+    @api.model
+    def create(self, vals):
+        return super(my_accountMoveLine, self).create(vals)
 
     # -----------------------------
     # On change methods
@@ -220,9 +224,10 @@ class my_accountMove(models.Model):
                 return self.env['myaccount.myaccount'].search(domain, limit=1)
 
         def _update_journal_lines(self, journal_line, amount):
-            journal_line.update({
-                'credit': amount
-            })
+            for line in journal_line:
+                line.update({
+                    'credit': line.price_subtotal
+                })
 
         def _update_main_account(self, terms_line, amount, account_id):
             new_terms_lines = self.env['myaccount.move.line']
@@ -267,3 +272,7 @@ class my_accountMove(models.Model):
         self._recompute_journal_lines()
         self.invoice_line_ids = self.line_ids.filtered(lambda line: not line.exclude_from_invoice_tab)
 
+    @api.model
+    def create(self, vals):
+        vals['line_ids'] = list(filter(lambda line : line[0] != 0, vals['line_ids']))
+        return super(my_accountMove, self).create(vals)
