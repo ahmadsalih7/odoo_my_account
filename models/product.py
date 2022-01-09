@@ -23,4 +23,4 @@ class ProductTemplate(models.Model):
         result = []
         for rec in self:
             result.append((rec.id, f'[{rec.barcode}] - {rec.name}'))
-        return  result
+        return result

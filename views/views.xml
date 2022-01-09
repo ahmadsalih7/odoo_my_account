@@ -19,6 +19,7 @@
                     <field name="credit" sum="Total Credit"/>
                     <field name="balance" invisible="1"/>
                     <field name="exclude_from_invoice_tab" invisible="1"/>
+                    <field name="payment_id" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -185,9 +186,10 @@
                             <field name="account_id" style="width:40%%"/>
                             <field name="name" style="width:40%%"/>
                             <field name="company_id" invisible="1"/>
-                            <field name="company_currency_id" invisible="1"/>
                             <field name="debit" style="width:40%%"/>
                             <field name="credit" style="width:40%%"/>
+                            <field name="company_currency_id" invisible="1"/>
+                            <field name="payment_id" invisible="1"/>
                         </group>
                     </sheet>
                 </form>
@@ -300,10 +302,10 @@
                                         <field name="account_id" />
                                         <field name="partner_id" />
                                         <field name="name" />
-                                        <field name="debit" />
-                                        <field name="credit" />
-
+                                        <field name="debit" sum="Total Debit"/>
+                                        <field name="credit" sum="Total Credit"/>
                                         <field name="exclude_from_invoice_tab" invisible="1"/>
+                                        <field name="payment_id" invisible="1"/>
                                     </tree>
                                 </field>
                             </page>

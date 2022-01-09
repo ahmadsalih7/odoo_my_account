@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class my_accountMoveLine(models.Model):
@@ -21,6 +22,7 @@ class my_accountMoveLine(models.Model):
     balance = fields.Monetary(string='Balance', default=0.0, currency_field='company_currency_id')
 
     product_id = fields.Many2one('my_product.template', string="Product")
+    payment_id = fields.Many2one('myaccount.payment', string="Originator Payment", copy=False)
     quantity = fields.Float(string='Quantity', default=1.0)
     price_unit = fields.Float(string='Unit Price', digits='Product Price')
     discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0)
@@ -72,6 +74,7 @@ class my_accountMoveLine(models.Model):
     
     @api.model
     def create(self, vals):
+        print(vals)
         return super(my_accountMoveLine, self).create(vals)
 
     # -----------------------------
@@ -162,12 +165,20 @@ class my_accountMove(models.Model):
                                    currency_field='company_currency_id')
 
     def action_post(self):
+        if not self.partner_id:
+            raise UserError(
+                _("The field 'Customer' is required, please complete it to validate the Customer Invoice."))
+
         if self.name == '/':
             # if it's a new record
-            if self.type == 'entry':
+            if self.journal_id.type == 'general':
                 name = self.env['ir.sequence'].next_by_code('myaccount.move') or '/'
-            elif self.type == 'out_invoice':
+            elif self.journal_id.type == 'sale':
                 name = self.env['ir.sequence'].next_by_code('myaccount.move.invoices') or '/'
+            elif self.journal_id.type == 'cash':
+                name = self.env['ir.sequence'].next_by_code('myaccount.payment.cash') or '/'
+            elif self.journal_id.type == 'bank':
+                name = self.env['ir.sequence'].next_by_code('myaccount.payment.bank') or '/'
         else:
             name = self.name
         self.write({'state': 'posted',
@@ -274,5 +285,14 @@ class my_accountMove(models.Model):
 
     @api.model
     def create(self, vals):
-        vals['line_ids'] = list(filter(lambda line : line[0] != 0, vals['line_ids']))
+        def filter_line(line):
+            invoices = vals.get('invoice_line_ids', 0)
+            if line[0] != 0:
+                return True
+            if invoices and line[1] not in [invoice[1] for invoice in invoices]:
+                return True
+            if not invoices:
+                return True
+            return False
+        vals['line_ids'] = list(filter(filter_line, vals['line_ids']))
         return super(my_accountMove, self).create(vals)

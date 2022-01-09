@@ -34,7 +34,6 @@
                         <field name="state" invisible="1"/>
                         <field name="company_id" invisible="1"/>
                         <field name="company_currency_id" invisible="1"/>
-
                     </group>
                 </sheet>
             </form>
@@ -65,12 +64,13 @@
         <field name="model">myaccount.payment</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="date"/>
+                <field name="payment_date"/>
                 <field name="name"/>
                 <field name="journal_id"/>
                 <field name="payment_type"/>
                 <field name="partner_id"/>
                 <field name="state"/>
+                <field name="destination_account_id" invisible="1"/>
             </tree>
         </field>
     </record>
