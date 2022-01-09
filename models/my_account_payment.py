@@ -125,6 +125,7 @@ class account_payment(models.Model):
         return all_move_vals
 
     def post(self):
+        active_id = self._context.get('active_id')
         account_move = self.env['myaccount.move'].with_context(default_type='entry')
         for rec in self:
             sequence_code = "account.payment.customer.invoice"
@@ -132,3 +133,5 @@ class account_payment(models.Model):
                 rec.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=rec.payment_date)
             moves = account_move.create(rec._prepare_payment_moves())
             moves.action_post()
+            invoice = self.env['myaccount.move'].browse(active_id)
+            invoice.write({'invoice_payment_state': 'paid'})
