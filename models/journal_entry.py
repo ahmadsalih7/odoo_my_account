@@ -74,7 +74,6 @@ class my_accountMoveLine(models.Model):
     
     @api.model
     def create(self, vals):
-        print(vals)
         return super(my_accountMoveLine, self).create(vals)
 
     # -----------------------------

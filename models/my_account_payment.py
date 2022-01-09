@@ -41,7 +41,8 @@ class account_payment(models.Model):
     communication = fields.Char(string='Memo', readonly=True, states={'draft': [('readonly', False)]})
     amount = fields.Monetary(string='Amount', required=True, readonly=True, states={'draft': [('readonly', False)]},
                              tracking=True, currency_field='company_currency_id')
-    payment_date = fields.Date(string='Date', required=True, index=True, readonly=True, default=fields.Date.context_today)
+    payment_date = fields.Date(string='Date', required=True, index=True, readonly=True,
+                               default=fields.Date.context_today)
     payment_type = fields.Selection(
         [('outbound', 'Send Money'), ('inbound', 'Receive Money'), ('transfer', 'Internal Transfer')],
         string='Payment Type', required=True, readonly=True, states={'draft': [('readonly', False)]})
@@ -62,7 +63,8 @@ class account_payment(models.Model):
     journal_id = fields.Many2one('myaccount.journal', string='Journal', required=True, readonly=True,
                                  states={'draft': [('readonly', False)]}, tracking=True,
                                  domain="[('type', 'in', ('bank', 'cash')), ('company_id', '=', company_id)]")
-    destination_account_id = fields.Many2one('myaccount.myaccount', compute='_compute_destination_account_id', readonly=True)
+    destination_account_id = fields.Many2one('myaccount.myaccount', compute='_compute_destination_account_id',
+                                             readonly=True)
     invoice_ids = fields.Many2many('myaccount.move', 'myaccount_invoice_payment_rel', 'payment_id', 'invoice_id',
                                    string="Invoices", copy=False, readonly=True)
 
@@ -135,3 +137,7 @@ class account_payment(models.Model):
             moves.action_post()
             invoice = self.env['myaccount.move'].browse(active_id)
             invoice.write({'invoice_payment_state': 'paid'})
+            rec.write({'state': 'posted'})
+
+    def reset(self):
+        self.write({'state': 'draft'})
