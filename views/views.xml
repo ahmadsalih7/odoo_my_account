@@ -81,7 +81,7 @@
             <field name="arch" type="xml">
                 <tree string="Invoices" decoration-info="state == 'draft'">
                     <field name="name"/>
-                    <field name="partner_id" />
+                    <field name="partner_id"/>
                     <field name="invoice_date" optional="show"
                            invisible="context.get('default_type') != 'out_invoice'"
                            string="Invoice Date"/>
@@ -136,6 +136,17 @@
             <field name="view_id" ref="view_invoice_tree"/>
             <field name="domain">[('type', '=', 'out_invoice')]</field>
             <field name="context">{'default_type': 'out_invoice'}</field>
+        </record>
+
+        <!-- Bills action -->
+
+        <record id="action_move_in_invoice_type" model="ir.actions.act_window">
+            <field name="name">Bills</field>
+            <field name="res_model">myaccount.move</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_invoice_tree"/>
+            <field name="domain">[('type', '=', 'in_invoice')]</field>
+            <field name="context">{'default_type': 'in_invoice'}</field>
         </record>
 
         <!-- ######################  Form views  ##################################  -->
@@ -267,12 +278,14 @@
                             <page
                                     string="Invoice lines"
                                     attrs="{'invisible': [('type', '=', 'entry')]}">
-                                <field name="invoice_line_ids" context="{'default_type': context.get('default_type'), 'default_journal_id': journal_id}"
+                                <field name="invoice_line_ids"
+                                       context="{'default_type': context.get('default_type'), 'default_journal_id': journal_id}"
                                        mode="tree">
                                     <tree editable="bottom" string="Journal Items">
                                         <!-- Displayed fields -->
                                         <field name="product_id"/>
-                                        <field name="name" attrs="{'required': [('parent.type', '==', 'out_invoice')]}"/>
+                                        <field name="name"
+                                               attrs="{'required': [('parent.type', '==', 'out_invoice')]}"/>
                                         <field name="account_id"/>
                                         <field name="quantity"/>
                                         <field name="price_unit" string="Price"/>
@@ -299,9 +312,9 @@
                             <page string="Journal Items">
                                 <field name="line_ids">
                                     <tree editable="bottom" string="Journal Items">
-                                        <field name="account_id" />
-                                        <field name="partner_id" />
-                                        <field name="name" />
+                                        <field name="account_id"/>
+                                        <field name="partner_id"/>
+                                        <field name="name"/>
                                         <field name="debit" sum="Total Debit"/>
                                         <field name="credit" sum="Total Credit"/>
                                         <field name="exclude_from_invoice_tab" invisible="1"/>
