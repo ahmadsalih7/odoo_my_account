@@ -35,5 +35,13 @@
             <field name="sequence_id" ref="sequence_bank"/>
         </record>
 
+        <record id="myaccount_vendor_bills" model="myaccount.journal">
+            <field name="name">Vendor Bills</field>
+            <field name="code">BILL</field>
+            <field name="active">true</field>
+            <field name="type">purchase</field>
+            <field name="sequence_id" ref="sequence_vendor_bills"/>
+        </record>
+
     </data>
 </odoo>

@@ -43,5 +43,13 @@
             <field eval="False" name="company_id"/>
         </record>
 
+        <!-- Sequence for Vendor Bills !-->
+        <record id="sequence_vendor_bills" model="ir.sequence">
+            <field name="name">Payments vendor bills sequence</field>
+            <field name="code">account.payment.vendor.bills</field>
+            <field name="prefix">BILL/%(year)s/</field>
+            <field name="padding">4</field>
+            <field eval="False" name="company_id"/>
+        </record>
     </data>
 </odoo>

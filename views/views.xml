@@ -246,9 +246,12 @@
                                 <span attrs="{'invisible': ['|', ('type', '!=', 'out_invoice'), ('state', '!=', 'posted')]}">
                                     Customer Invoice
                                 </span>
+                                <span attrs="{'invisible': ['|', ('type', '!=', 'in_invoice'), ('state', '!=', 'draft')]}">
+                                    Draft Bill
+                                </span>
                             </h1>
                         </div>
-                        <div class="oe_title" attrs="{'invisible': [('type', 'not in', ('entry', 'out_invoice'))]}">
+                        <div class="oe_title" attrs="{'invisible': [('type', 'not in', ('entry', 'out_invoice', 'in_invoice'))]}">
                             <h1>
                                 <field name="name"/>
                             </h1>
@@ -261,9 +264,11 @@
                                            attrs="{'invisible': [('type', 'not in', 'out_invoice')]}"/>
                                     <label for="partner_id" string="Partner" style="font-weight:bold;"
                                            attrs="{'invisible': [('type', 'not in', 'entry')]}"/>
+                                    <label for="partner_id" string="Vendor" style="font-weight:bold;"
+                                           attrs="{'invisible': [('type', 'not in', 'in_invoice')]}"/>
                                 </div>
                                 <field name="partner_id"
-                                       attrs="{'invisible': [('type', 'not in', ('out_invoice', 'entry'))]}"
+                                       attrs="{'invisible': [('type', 'not in', ('out_invoice', 'entry', 'in_invoice'))]}"
                                        nolabel="1"/>
                                 <field name="ref"/>
                             </group>

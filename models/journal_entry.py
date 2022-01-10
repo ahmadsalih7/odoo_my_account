@@ -112,8 +112,10 @@ class my_accountMove(models.Model):
         journal_type = 'general'
         if move_type == 'entry':
             journal_type = 'general'
-        if move_type == 'out_invoice':
+        elif move_type == 'out_invoice':
             journal_type = 'sale'
+        elif move_type == 'in_invoice':
+            journal_type = 'purchase'
         domain = [('company_id', '=', self.env.user.company_id.id), ('type', '=', journal_type)]
         journal = self.env['myaccount.journal'].search(domain, limit=1)
         return journal
@@ -121,6 +123,7 @@ class my_accountMove(models.Model):
     type = fields.Selection(selection=[
         ('entry', 'Journal Entry'),
         ('out_invoice', 'Customer Invoice'),
+        ('in_invoice', 'Vendor Bills'),
     ], string='Type', required=True, store=True, readonly=True, tracking=True,
         default="entry", change_default=True)
     partner_id = fields.Many2one('res.partner', string='Partner', ondelete='restrict')
