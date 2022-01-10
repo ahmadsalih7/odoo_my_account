@@ -40,6 +40,13 @@ class my_accountMoveLine(models.Model):
             journal = self.env['myaccount.journal'].browse(
                 self._context.get('default_journal_id'))
             values['account_id'] = journal.default_credit_account_id.id
+        elif 'account_id' in default_fields \
+                and not values.get('account_id') \
+                and self._context.get('default_type') == 'in_invoice':
+            # Fill missing 'account_id'.
+            journal = self.env['myaccount.journal'].browse(
+                self._context.get('default_journal_id'))
+            values['account_id'] = journal.default_debit_account_id.id
         return values
 
     # -----------------------------

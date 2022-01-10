@@ -41,6 +41,9 @@
             <field name="active">true</field>
             <field name="type">purchase</field>
             <field name="sequence_id" ref="sequence_vendor_bills"/>
+            <field name="default_credit_account_id" ref="__import__.52900_general_product_cost"/>
+            <field name="default_debit_account_id" ref="__import__.52900_general_product_cost"/>
+
         </record>
 
     </data>
