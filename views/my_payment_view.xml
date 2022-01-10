@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!--    Payment menue Action  -->
-    <record model="ir.actions.act_window" id="my_account.payment_action_window">
+    <!--    Invoice Payment menue Action  -->
+    <record model="ir.actions.act_window" id="my_account.invoice_payment_action_window">
         <field name="name">Payments</field>
         <field name="res_model">myaccount.payment</field>
+        <field name="context">{'search_default_invoices_filter':1}</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+     <!--   Bills  Payment menue Action  -->
+    <record model="ir.actions.act_window" id="my_account.bills_payment_action_window">
+        <field name="name">Payments</field>
+        <field name="res_model">myaccount.payment</field>
+        <field name="context">{'search_default_bills_filter':1}</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -79,4 +88,18 @@
         </field>
     </record>
 
+    <!--    Invoices payment search view-->
+    <record id="view_invoices_payment_filter" model="ir.ui.view">
+        <field name="name">invoice.payment.select</field>
+        <field name="model">myaccount.payment</field>
+        <field name="arch" type="xml">
+            <search string="Search Move">
+                <field name="name" />
+                <field name="partner_type"/>
+                <separator/>
+                <filter string="Customer Payments" name="invoices_filter" domain="[('partner_type', '=', 'customer')]"/>
+                <filter string="Vendor Payments" name="bills_filter" domain="[('partner_type', '=', 'supplier')]"/>
+            </search>
+        </field>
+    </record>
 </odoo>
