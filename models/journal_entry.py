@@ -77,6 +77,19 @@ class my_accountMoveLine(models.Model):
         return {'price_subtotal': subtotal}
 
     @api.model
+    def _get_fields_onchange_subtotal(self):
+        move_type = self.move_id.type
+        if move_type in ('in_invoice'):
+            sign = 1
+        elif move_type in ('out_invoice'):
+            sign = -1
+        price_subtotal = self.price_subtotal * sign
+        return {
+            'debit': price_subtotal > 0.0 and price_subtotal or 0.0,
+            'credit': price_subtotal < 0.0 and -price_subtotal or 0.0,
+        }
+
+    @api.model
     def create(self, vals):
         return super(my_accountMoveLine, self).create(vals)
 
@@ -100,7 +113,7 @@ class my_accountMoveLine(models.Model):
         self.name = self.product_id.name
 
     @api.onchange('quantity', 'discount', 'price_unit')
-    def _onchange_price_subtotal(self):
+    def _onchange_price_unit(self):
         for line in self:
             line.update(line._get_price_total_and_subtotal())
 
@@ -108,6 +121,13 @@ class my_accountMoveLine(models.Model):
     def _compute_balance(self):
         for line in self:
             line.balance = line.debit - line.credit
+
+    @api.onchange('price_subtotal')
+    def _onchange_price_subtotal(self):
+        for line in self:
+            if line.move_id.type not in ('in_invoice', 'out_invoice'):
+                continue
+            line.update(line._get_fields_onchange_subtotal())
 
 
 class my_accountMove(models.Model):
@@ -189,6 +209,8 @@ class my_accountMove(models.Model):
                 name = self.env['ir.sequence'].next_by_code('myaccount.payment.cash') or '/'
             elif self.journal_id.type == 'bank':
                 name = self.env['ir.sequence'].next_by_code('myaccount.payment.bank') or '/'
+            elif self.journal_id.type == 'purchase':
+                name = self.env['ir.sequence'].next_by_code('myaccount.move.bills') or '/'
         else:
             name = self.name
         self.write({'state': 'posted',
@@ -207,7 +229,8 @@ class my_accountMove(models.Model):
         if self.state == 'draft':
             draft_name += {
                 'out_invoice': _('Draft Invoice'),
-                'entry': _('Draft Entry')
+                'entry': _('Draft Entry'),
+                'in_invoice': _('Draft Bill')
             }[self.type]
             draft_name += ' (* %s)' % str(self.id)
         return draft_name
@@ -239,14 +262,15 @@ class my_accountMove(models.Model):
             else:
                 # Search new account.
                 domain = [
-                    ('internal_type', '=', 'receivable'),
+                    ('internal_type', '=', 'receivable' if self.type == 'out_invoice' else 'payable'),
                 ]
                 return self.env['myaccount.myaccount'].search(domain, limit=1)
 
         def _update_journal_lines(self, journal_line, amount):
             for line in journal_line:
                 line.update({
-                    'credit': line.price_subtotal
+                    'debit': amount > 0 and amount or 0.0,
+                    'credit': amount < 0 and - amount or 0.0
                 })
 
         def _update_main_account(self, terms_line, amount, account_id):
@@ -255,29 +279,33 @@ class my_accountMove(models.Model):
                 # There is a receivable account then just update the amount
                 receivable_line = terms_line[0]  # In this case it must be only one line
                 receivable_line.update({
-                    'debit': amount
+                    'debit': amount < 0 and - amount or 0.0,
+                    'credit': amount > 0 and amount or 0.0
                 })
             else:
                 # There is no receivable line then create new
                 receivable_line = self.env['myaccount.move.line'].create({
                     'move_id': self.id,
                     'account_id': account_id.id,
-                    'debit': amount,
+                    'debit': amount < 0 and - amount or 0.0,
+                    'credit': amount > 0 and amount or 0.0,
                     'exclude_from_invoice_tab': True,
                 })
             new_terms_lines += receivable_line
             return new_terms_lines
 
-        existing_terms_lines = self.line_ids.filtered(lambda line: line.account_id.internal_type == 'receivable')
-        other_journal_lines = self.line_ids.filtered(lambda line: line.account_id.internal_type != 'receivable')
-        subtotal_sum = sum(other_journal_lines.mapped('price_subtotal'))
+        existing_terms_lines = self.line_ids.filtered(
+            lambda line: line.account_id.internal_type in ('receivable', 'payable'))
+        other_journal_lines = self.line_ids.filtered(
+            lambda line: line.account_id.internal_type not in ('receivable', 'payable'))
+        subtotal_balance = sum(other_journal_lines.mapped('balance'))
         if not other_journal_lines:
             self.line_ids -= existing_terms_lines
             return
 
         account_id = _get_main_account(self, existing_terms_lines)
-        new_terms_lines = _update_main_account(self, existing_terms_lines, subtotal_sum, account_id)
-        _update_journal_lines(self, other_journal_lines, subtotal_sum)
+        new_terms_lines = _update_main_account(self, existing_terms_lines, subtotal_balance, account_id)
+        _update_journal_lines(self, other_journal_lines, subtotal_balance)
 
         # Remove old terms lines that are no longer needed.
         self.line_ids -= existing_terms_lines - new_terms_lines

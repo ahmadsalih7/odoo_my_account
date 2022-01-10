@@ -24,8 +24,8 @@ class account_payment(models.Model):
             'communication': invoice.name,
             'amount': invoice.amount_total,
             'partner_id': invoice.partner_id.id,
-            'payment_type': 'inbound',
-            'partner_type': 'customer',
+            'payment_type': 'inbound' if invoice.type == 'out_invoice' else 'outbound',
+            'partner_type': 'customer' if invoice.type == 'out_invoice' else 'supplier',
 
         })
         invoices = self.env['myaccount.move'].browse(active_ids)
@@ -91,8 +91,19 @@ class account_payment(models.Model):
     def _prepare_payment_moves(self):
         all_move_vals = []
         for payment in self:
+            # Compute amounts.
+            if payment.payment_type in ('outbound'):
+                balance = -payment.amount
+                liquidity_line_account = payment.journal_id.default_debit_account_id
+            else:
+                balance = payment.amount
+                liquidity_line_account = payment.journal_id.default_credit_account_id
+
             # name used for receivable line
-            rec_pay_line_name = 'Customer Payment'
+            if payment.payment_type == 'inbound':
+                rec_pay_line_name = 'Customer Payment'
+            else:
+                rec_pay_line_name = 'Vendor Payment'
             if payment.invoice_ids:
                 rec_pay_line_name += ': %s' % ', '.join(payment.invoice_ids.mapped('name'))
                 # name used for in liquidity line
@@ -106,8 +117,8 @@ class account_payment(models.Model):
                     # Receivable line.
                     (0, 0, {
                         'name': rec_pay_line_name,
-                        'debit': 0.0,
-                        'credit': payment.amount,
+                        'debit': balance < 0 and - balance or 0.0,
+                        'credit': balance > 0 and balance or 0.0,
                         'partner_id': payment.partner_id.id,
                         'account_id': payment.destination_account_id.id,
                         'payment_id': payment.id
@@ -115,10 +126,10 @@ class account_payment(models.Model):
                     # Liquidity line.
                     (0, 0, {
                         'name': liquidity_line_name,
-                        'debit': payment.amount,
-                        'credit': 0.0,
+                        'debit': balance > 0 and balance or 0.0,
+                        'credit': balance < 0 and - balance or 0.0,
                         'partner_id': payment.partner_id.id,
-                        'account_id': payment.journal_id.default_debit_account_id.id,
+                        'account_id': liquidity_line_account.id,
                         'payment_id': payment.id
                     }),
                 ]
@@ -130,7 +141,10 @@ class account_payment(models.Model):
         active_id = self._context.get('active_id')
         account_move = self.env['myaccount.move'].with_context(default_type='entry')
         for rec in self:
-            sequence_code = "account.payment.customer.invoice"
+            if rec.payment_type == 'inbound':
+                sequence_code = "account.payment.customer.invoice"
+            else:
+                sequence_code = "account.payment.vendor.bills"
             if not rec.name:
                 rec.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=rec.payment_date)
             moves = account_move.create(rec._prepare_payment_moves())

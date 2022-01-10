@@ -43,13 +43,23 @@
             <field eval="False" name="company_id"/>
         </record>
 
-        <!-- Sequence for Vendor Bills !-->
+        <!-- Sequence for Bills !-->
         <record id="sequence_vendor_bills" model="ir.sequence">
-            <field name="name">Payments vendor bills sequence</field>
-            <field name="code">account.payment.vendor.bills</field>
+            <field name="name">Bills</field>
+            <field name="code">myaccount.move.bills</field>
             <field name="prefix">BILL/%(year)s/</field>
             <field name="padding">4</field>
             <field eval="False" name="company_id"/>
         </record>
+
+        <!-- Sequence for Supplier Bills !-->
+        <record id="sequence_supplier_bills" model="ir.sequence">
+            <field name="name">Payments vendor bills sequence</field>
+            <field name="code">account.payment.vendor.bills</field>
+            <field name="prefix">SUPP.OUT/%(year)s/</field>
+            <field name="padding">4</field>
+            <field eval="False" name="company_id"/>
+        </record>
+
     </data>
 </odoo>

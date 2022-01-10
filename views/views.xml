@@ -228,7 +228,7 @@
                         <!-- Register Payment (only invoices / receipts) -->
                         <button name="action_invoice_register_payment" id="account_invoice_payment_btn"
                                 type="object" class="oe_highlight"
-                                attrs="{'invisible': ['|', '|', ('state', '!=', 'posted'), ('invoice_payment_state', '!=', 'not_paid'), ('type', 'not in', 'out_invoice')]}"
+                                attrs="{'invisible': ['|', '|', ('state', '!=', 'posted'), ('invoice_payment_state', '!=', 'not_paid'), ('type', 'not in', ('out_invoice', 'in_invoice'))]}"
                                 string="Register Payment"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
                     </header>
@@ -311,7 +311,7 @@
                                 <field name="company_id" invisible="1"/>
                                 <field name="company_currency_id" invisible="1"/>
                                 <group class="oe_subtotal_footer"
-                                       attrs="{'invisible': [('type', '!=', 'out_invoice')]}">
+                                       attrs="{'invisible': [('type', 'not in', ('out_invoice', 'in_invoice'))]}">
                                     <field name="amount_total" force_save="1" class="oe_subtotal_footer_separator"/>
                                 </group>
                             </page>
