@@ -285,11 +285,11 @@ class my_accountMove(models.Model):
     def create(self, vals):
         def filter_line(line):
             invoices = vals.get('invoice_line_ids', 0)
+            if not invoices:
+                return True
             if line[0] != 0:
                 return True
             if invoices and line[1] not in [invoice[1] for invoice in invoices]:
-                return True
-            if not invoices:
                 return True
             return False
         vals['line_ids'] = list(filter(filter_line, vals['line_ids']))
