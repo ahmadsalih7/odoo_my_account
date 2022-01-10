@@ -251,7 +251,8 @@
                                 </span>
                             </h1>
                         </div>
-                        <div class="oe_title" attrs="{'invisible': [('type', 'not in', ('entry', 'out_invoice', 'in_invoice'))]}">
+                        <div class="oe_title"
+                             attrs="{'invisible': [('type', 'not in', ('entry', 'out_invoice', 'in_invoice'))]}">
                             <h1>
                                 <field name="name"/>
                             </h1>
@@ -315,7 +316,8 @@
                                 </group>
                             </page>
                             <page string="Journal Items">
-                                <field name="line_ids">
+                                <field name="line_ids"
+                                       context="{'line_ids': line_ids}">
                                     <tree editable="bottom" string="Journal Items">
                                         <field name="account_id"/>
                                         <field name="partner_id"/>

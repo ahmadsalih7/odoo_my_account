@@ -19,8 +19,9 @@ class my_accountMoveLine(models.Model):
     debit = fields.Monetary(string='Debit', default=0.0, currency_field='company_currency_id')
     credit = fields.Monetary(string='Credit', default=0.0, currency_field='company_currency_id')
     move_id = fields.Many2one('myaccount.move')
-    balance = fields.Monetary(string='Balance', default=0.0, currency_field='company_currency_id')
-
+    balance = fields.Monetary(string='Balance', default=0.0, store=True,
+                              currency_field='company_currency_id',
+                              compute='_compute_balance')
     product_id = fields.Many2one('my_product.template', string="Product")
     payment_id = fields.Many2one('myaccount.payment', string="Originator Payment", copy=False)
     quantity = fields.Float(string='Quantity', default=1.0)
@@ -47,25 +48,21 @@ class my_accountMoveLine(models.Model):
             journal = self.env['myaccount.journal'].browse(
                 self._context.get('default_journal_id'))
             values['account_id'] = journal.default_debit_account_id.id
+        elif self._context.get('line_ids') and any(
+                field_name in default_fields for field_name in ('debit', 'credit')):
+            move = self.env['myaccount.move'].new({'line_ids': self._context['line_ids']})
+            # Suggest default value for debit / credit to balance the journal entry.
+            balance = sum(line['debit'] - line['credit'] for line in move.line_ids)
+            if balance < 0.0:
+                values.update({'debit': -balance})
+            if balance > 0.0:
+                values.update({'credit': balance})
+
         return values
 
     # -----------------------------
     # Helpers
     # -----------------------------
-    def recompute_fields(self):
-        if not self.debit and not self.credit and not self.balance:
-            current_balance = sum(line.balance for line in self.move_id.line_ids)
-            if current_balance > 0.0:
-                self.debit = current_balance
-            else:
-                self.credit = -1 * current_balance
-            self.balance = 0
-            return
-        if self.debit:
-            self.balance = -1 * self.debit
-            return
-        else:
-            self.balance = self.credit
 
     @api.model
     def _get_price_total_and_subtotal(self):
@@ -78,7 +75,7 @@ class my_accountMoveLine(models.Model):
         subtotal = quantity * price_unit_wo_discount
 
         return {'price_subtotal': subtotal}
-    
+
     @api.model
     def create(self, vals):
         return super(my_accountMoveLine, self).create(vals)
@@ -91,13 +88,11 @@ class my_accountMoveLine(models.Model):
     def on_change_debit(self):
         if self.debit:
             self.credit = 0.0
-        self.recompute_fields()
 
     @api.onchange('credit')
     def on_change_credit(self):
         if self.credit:
             self.debit = 0.0
-        self.recompute_fields()
 
     @api.onchange('product_id')
     def on_change_product_id(self):
@@ -108,6 +103,12 @@ class my_accountMoveLine(models.Model):
     def _onchange_price_subtotal(self):
         for line in self:
             line.update(line._get_price_total_and_subtotal())
+
+    @api.depends('debit', 'credit')
+    def _compute_balance(self):
+        for line in self:
+            line.balance = line.debit - line.credit
+
 
 class my_accountMove(models.Model):
     _name = "myaccount.move"
@@ -252,7 +253,7 @@ class my_accountMove(models.Model):
             new_terms_lines = self.env['myaccount.move.line']
             if terms_line:
                 # There is a receivable account then just update the amount
-                receivable_line = terms_line[0]   # In this case it must be only one line
+                receivable_line = terms_line[0]  # In this case it must be only one line
                 receivable_line.update({
                     'debit': amount
                 })
@@ -302,5 +303,6 @@ class my_accountMove(models.Model):
             if invoices and line[1] not in [invoice[1] for invoice in invoices]:
                 return True
             return False
+
         vals['line_ids'] = list(filter(filter_line, vals['line_ids']))
         return super(my_accountMove, self).create(vals)
