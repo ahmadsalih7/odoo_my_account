@@ -269,8 +269,8 @@ class my_accountMove(models.Model):
         def _update_journal_lines(self, journal_line, amount):
             for line in journal_line:
                 line.update({
-                    'debit': amount > 0 and amount or 0.0,
-                    'credit': amount < 0 and - amount or 0.0
+                    'debit': amount > 0 and line.price_subtotal or 0.0,
+                    'credit': amount < 0 and line.price_subtotal or 0.0
                 })
 
         def _update_main_account(self, terms_line, amount, account_id):
