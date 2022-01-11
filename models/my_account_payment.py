@@ -67,6 +67,7 @@ class account_payment(models.Model):
                                              readonly=True)
     invoice_ids = fields.Many2many('myaccount.move', 'myaccount_invoice_payment_rel', 'payment_id', 'invoice_id',
                                    string="Invoices", copy=False, readonly=True)
+    move_line_ids = fields.One2many('myaccount.move.line', 'payment_id', readonly=True)
 
     @api.depends('invoice_ids', 'payment_type', 'partner_type', 'partner_id')
     def _compute_destination_account_id(self):
@@ -148,6 +149,7 @@ class account_payment(models.Model):
             if not rec.name:
                 rec.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=rec.payment_date)
             moves = account_move.create(rec._prepare_payment_moves())
+            rec.update({'move_line_ids': moves})
             moves.action_post()
             invoice = self.env['myaccount.move'].browse(active_id)
             invoice.write({'invoice_payment_state': 'paid'})
@@ -155,3 +157,23 @@ class account_payment(models.Model):
 
     def reset(self):
         self.write({'state': 'draft'})
+
+    def button_journal_entries(self):
+        return {
+            'name': _('Journal Items'),
+            'view_mode': 'tree,form',
+            'res_model': 'myaccount.move.line',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('payment_id', 'in', self.ids)],
+        }
+
+    def button_invoices(self):
+        return {
+            'name': _('Paid invoices'),
+            'view_mode': 'tree,form',
+            'res_model': 'myaccount.move',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', [invoice.id for invoice in self.invoice_ids])]
+        }

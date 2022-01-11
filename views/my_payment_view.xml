@@ -9,7 +9,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-     <!--   Bills  Payment menue Action  -->
+    <!--   Bills  Payment menue Action  -->
     <record model="ir.actions.act_window" id="my_account.bills_payment_action_window">
         <field name="name">Payments</field>
         <field name="res_model">myaccount.payment</field>
@@ -29,9 +29,20 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,posted,reconciled,cancelled"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="button_journal_entries"
+                                string="Journal Items" type="object"
+                                attrs="{'invisible':[('move_line_ids','=',[])]}" icon="fa-bars"/>
+                        <field name="move_line_ids" invisible="1"/>
+                        <button class="oe_stat_button" name="button_invoices" type="object" icon="fa-bars" string="Invoices"/>
+                    </div>
+                    <div class="oe_title" attrs="{'invisible': [('state', '=', 'draft')]}">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
                     <group>
                         <group invisible="context.get('active_model') == 'account.move'">
-                            <field name="name" style="width:40%%"/>
                             <field name="payment_type" widget="radio"/>
                             <field name="partner_type" style="width:40%%"/>
                             <field name="partner_id" style="width:40%%"/>
@@ -41,6 +52,7 @@
                         </group>
                         <group>
                             <field name="communication"/>
+                            <field name="payment_date"/>
                             <field name="amount"/>
                         </group>
                         <!--invisible fields-->
@@ -94,7 +106,7 @@
         <field name="model">myaccount.payment</field>
         <field name="arch" type="xml">
             <search string="Search Move">
-                <field name="name" />
+                <field name="name"/>
                 <field name="partner_type"/>
                 <separator/>
                 <filter string="Customer Payments" name="invoices_filter" domain="[('partner_type', '=', 'customer')]"/>
