@@ -175,5 +175,5 @@ class account_payment(models.Model):
             'res_model': 'myaccount.move',
             'view_id': False,
             'type': 'ir.actions.act_window',
-            'domain': [('id', 'in', [invoice.id for invoice in self.invoice_ids])]
+            'domain': [('id', 'in', self.invoice_ids.mapped('id'))]
         }
