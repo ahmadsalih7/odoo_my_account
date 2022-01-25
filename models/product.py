@@ -8,7 +8,12 @@ class ProductTemplate(models.Model):
     _description = "Product Template"
     _order = "name"
 
+    def _default_currency_id(self):
+        company_id = self.env.context.get('force_company') or self.env.context.get('company_id') or self.env.company.id
+        return self.env['res.company'].browse(company_id).currency_id
+
     name = fields.Char('Name', required=True)
+    company_id = fields.Many2one('res.company', 'Company', required=True, default=lambda self: self.env.company.id)
     sale_ok = fields.Boolean('Can be Sold', default=True)
     purchase_ok = fields.Boolean('Can be Purchased', default=True)
     type = fields.Selection([
